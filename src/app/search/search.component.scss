@@ -1,0 +1,28 @@
+#search_card {
+    .row {
+        margin: 10px 0;
+    }
+}
+
+td {
+    white-space: normal;
+}
+
+.daysTable {
+    td {
+        border: 1px solid gray;
+    }
+}
+
+.tt-div {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    .tt-btn {
+        margin: 0 10px;
+    }
+}
+
+.tt-btn-td {
+    margin: 5px 0;
+}

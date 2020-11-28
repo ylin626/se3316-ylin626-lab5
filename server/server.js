@@ -30,11 +30,7 @@ app.get("/schedule/all", function(req, res) {
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").find({}).project({
-            subject: 1,
-            className: 1,
-            catalog_nbr: 1
-        }).toArray(function(err, result) {
+        dbo.collection("schedule").find({}).limit(20).toArray(function(err, result) {
             if (err) throw err;
             db.close();
             res.send({
