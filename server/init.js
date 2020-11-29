@@ -16249,6 +16249,9 @@ function initDB(client) {
     });
     timeTable.forEach(element => {
         element.catalog_nbr = element.catalog_nbr.toString();
+        element.createUser = "Admin";
+        element.reviseTime = new Date("YY-MM-DD hh:mm:ss");
+
     });
     db.collection("schedule").insertMany(timeTable, function(err, result) {
         if (err) throw err;
