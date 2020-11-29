@@ -27,10 +27,9 @@ app.get("/visitor/all", function(req, res) {
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").find({}).limit(20).toArray(function(err, result) {
+        dbo.collection("schedule").find({}).limit(10).toArray(function(err, result) {
             if (err) throw err;
             db.close();
-            console.log(result.length)
             res.send({
                 status: 200,
                 text: "find successful！",
@@ -79,8 +78,6 @@ app.post("/visitor/findinfo", function(req, res) {
     key.course_info = {
         $elemMatch: elem
     }
-    console.log(key);
-    console.log(elem.days)
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
@@ -114,7 +111,6 @@ app.post("/visitor/findbykeyword", function(req, res) {
             { className: new RegExp(`${kw}`, "i") }
         ]
     }
-    console.log(key);
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
@@ -171,34 +167,9 @@ app.post("/add/schedule", function(req, res) {
  * .Save a list of subject code, course code pairs under a given schedule name. 
  * Return an error if the schedule name does not exist. 
  * Replace existing subject-code + course-code pairs with new values and create new pairs if it doesn’t exist.
- * @param id
- * @param class_nbr
- * @param campus
- * @param facility_ID
- * @param class_section
- * @param ssr_component
- * @param descr
- * @param enrl_stat
- * @param start_time
- * @param end_time
- * @param days
+ * @param addCdata
  */
-app.post("/add/course", function(req, res) {
-    var course_info;
-    var key = {
-        class_nbr: req.body.class_nbr,
-        start_time: req.body.start_time,
-        descrlong: "",
-        end_time: req.body.end_time,
-        campus: req.body.campus,
-        facility_ID: req.body.facility_ID,
-        days: req.body.days,
-        instructors: [],
-        class_section: req.body.class_section,
-        ssr_component: req.body.ssr_component,
-        enrl_stat: req.body.enrl_stat,
-        descr: req.body.descr
-    }
+app.post("/user/addClass", function(req, res) {
 
     MongoClient.connect(url, {
         useNewUrlParser: true
@@ -213,18 +184,18 @@ app.post("/add/course", function(req, res) {
             if (err) throw err;
             var judge = true;
             for (var i = 0; i < result[0].course_info.length; i++) {
-                if (result[0].course_info[i].classNbr == req.body.class_nbr) {
+                if (result[0].course_info[i].classNbr == req.body.data.class_nbr) {
                     judge = false;
                     res.send({
                         status: 400,
-                        text: "Add Faild！Name already used."
+                        text: "Add Faild！Nbr already used."
                     });
                     db.close();
                     break;
                 }
             }
             if (judge) {
-                result[0].course_info.push(key);
+                result[0].course_info.push(req.body.data);
                 dbo.collection("schedule").updateOne({ _id: ObjectID(req.body.id) }, { $set: { course_info: result[0].course_info } }, function(err, result1) {
                     if (err) throw err;
                     res.send({
