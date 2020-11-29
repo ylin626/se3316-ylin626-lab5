@@ -12,19 +12,16 @@ app.use(bodyParser.urlencoded({
 
 app.all("*", function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "content-type");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
     res.header("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
-    if (req.method.toLowerCase() == 'options')
-        res.send(400);
-    else
-        next();
+    next();
 
 });
 
 /**
  * 1.get all subject
  */
-app.get("/schedule/all", function(req, res) {
+app.get("/visitor/all", function(req, res) {
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
@@ -41,81 +38,49 @@ app.get("/schedule/all", function(req, res) {
         })
     })
 });
-//     /**
-//      * 2.get all course code for subject code
-//      * @param catalogNbr
-//      */
-// app.post("/schedule/course", function(req, res) {
-//     MongoClient.connect(url, {
-//         useNewUrlParser: true
-//     }, function(err, db) {
-//         if (err) throw err;
-//         var dbo = db.db("timeTable")
-//         dbo.collection("schedule").find({
-//             catalog_nbr: { $eq: req.body.catalogNbr }
-//         }).project({
-//             course_info: 1,
-//             catalog_description: 1
-//         }).toArray(function(err, result) {
-//             if (err) throw err;
-//             db.close();
-//             res.send({
-//                 status: 200,
-//                 text: "find successful！",
-//                 data: result
-//             });
-//         })
-//     })
-// })
-/**
- * 2.get all course code for subject code
- * @param id
- */
-app.post("/schedule/id", function(req, res) {
-    MongoClient.connect(url, {
-        useNewUrlParser: true
-    }, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("timeTable")
-        dbo.collection("schedule").find({
-            _id: { $eq: ObjectID(req.body.id) }
-        }).project({
-            className: 1,
-            course_info: 1,
-            catalog_description: 1
-        }).toArray(function(err, result) {
-            if (err) throw err;
-            db.close();
-            res.send({
-                status: 200,
-                text: "find successful！",
-                data: result
-            });
-        })
-    })
-})
+
+
 
 /**
- * 3.1 get scheduleList by catalogNbr and classNbr and component
- * @param catalogNbr
- * @param classNbr
+ * 3.1 get scheduleList by Subject, Course Suffix, Component, Starting Time, Ending Time, Day of Class, Campus
+ * @param subject
+ * @param designation
  * @param component
+ * @param s_time
+ * @param e_time
+ * @param days
+ * @param locationCode
  */
-app.post("/schedule/catalogAndClassNbrOrComponent", function(req, res) {
-    var key = {
-        catalog_nbr: req.body.catalogNbr,
-        course_info: {
-            $elemMatch: {
-                class_nbr: {
-                    $eq: parseInt(req.body.classNbr)
-                },
-                ssr_component: {
-                    $eq: req.body.component
-                }
-            }
-        }
+app.post("/visitor/findinfo", function(req, res) {
+    console.log(req.body)
+    var elem = {};
+    var key = {}
+    if (req.body.subject != "") {
+        key.subject = req.body.subject;
     }
-
+    if (req.body.designation != "") {
+        key.className = new RegExp(`${req.body.designation}$`);
+    }
+    if (req.body.component != "") {
+        elem.ssr_component = req.body.component;
+    }
+    if (req.body.s_time != "") {
+        elem.start_time = req.body.s_time.toUpperCase();
+    }
+    if (req.body.e_time != "") {
+        elem.end_time = req.body.e_time.toUpperCase();
+    }
+    if (req.body.locationCode != "") {
+        elem.campus = req.body.locationCode;
+    }
+    elem.days = {
+        $elemMatch: { $in: req.body.days }
+    }
+    key.course_info = {
+        $elemMatch: elem
+    }
+    console.log(key);
+    console.log(elem.days);
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
@@ -124,6 +89,7 @@ app.post("/schedule/catalogAndClassNbrOrComponent", function(req, res) {
         dbo.collection("schedule").find(key).project({}).toArray(function(err, result) {
             if (err) throw err;
             db.close();
+            console.log(result.length)
             res.send({
                 status: 200,
                 text: "find successful！",

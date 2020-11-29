@@ -22,12 +22,12 @@
                     <img src="assets/img/head.jpg" alt="">
                     <span class="status online"></span>
                 </span>
-                <span>Admin</span>
+                <span>{{userName}}</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" href="profile.html"><i data-feather="user" class="mr-1"></i> Profile</a>
                 <a class="dropdown-item" href="settings.html"><i data-feather="settings" class="mr-1"></i> Settings</a>
-                <a class="dropdown-item" routerLink="/login"><i data-feather="log-out" class="mr-1"></i> Logout</a>
+                <a class="dropdown-item" routerLink="/login" (click)="logout()"><i data-feather="log-out" class="mr-1"></i> {{isLogin?"Logout":"Login"}}</a>
             </div>
         </li>
         <!-- /User Menu -->

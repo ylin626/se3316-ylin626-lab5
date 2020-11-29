@@ -11,7 +11,6 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { HeadComponent } from './head/head.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { SearchComponent } from './search/search.component';
 
 @NgModule({
@@ -20,7 +19,6 @@ import { SearchComponent } from './search/search.component';
     HeadComponent,
     LoginComponent,
     RegisterComponent,
-    SidebarComponent,
     SearchComponent
   ],
   imports: [

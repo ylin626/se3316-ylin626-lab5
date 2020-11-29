@@ -3500,7 +3500,6 @@ table.table-inbox tbody tr.checked {
     box-shadow: 0 0 13px 0 rgba(82, 63, 105, 0.05);
     display: flex;
     margin: 1.875rem auto;
-    max-width: 450px;
     width: 100%;
 }
 
@@ -3511,7 +3510,7 @@ table.table-inbox tbody tr.checked {
     flex-direction: column;
     justify-content: center;
     padding: 80px;
-    width: 450px;
+    width: auto;
     display: flex;
 }
 
