@@ -27,7 +27,7 @@ app.get("/visitor/all", function(req, res) {
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").find({}).limit(10).toArray(function(err, result) {
+        dbo.collection("schedule").find({}).sort({ reviseTime: -1 }).limit(10).toArray(function(err, result) {
             if (err) throw err;
             db.close();
             res.send({
@@ -83,7 +83,7 @@ app.post("/visitor/findinfo", function(req, res) {
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).project({}).toArray(function(err, result) {
+        dbo.collection("schedule").find(key).sort({ reviseTime: 1 }).toArray(function(err, result) {
             if (err) throw err;
             db.close();
             console.log(result.length)
@@ -116,7 +116,7 @@ app.post("/visitor/findbykeyword", function(req, res) {
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).project({}).toArray(function(err, result) {
+        dbo.collection("schedule").find(key).sort({ reviseTime: 1 }).toArray(function(err, result) {
             if (err) throw err;
             db.close();
             console.log(result.length)
@@ -138,21 +138,15 @@ app.post("/visitor/findbykeyword", function(req, res) {
  * @param className
  * @param catalog_description
  */
-app.post("/add/schedule", function(req, res) {
-    var key = {
-        catalog_nbr: req.body.catalogNbr,
-        subject: req.body.subject,
-        className: req.body.className,
-        course_info: [],
-        catalog_description: req.body.catalog_description
-    }
-
+app.post("/user/addCatalog", function(req, res) {
+    req.body.reviseTime = new Date();
+    req.body.course_info = [];
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").insertOne(key, function(err, result) {
+        dbo.collection("schedule").insertOne(req.body, function(err, result) {
             if (err) throw err;
             db.close();
             res.send({
@@ -285,19 +279,21 @@ app.get("/delete/all", function(req, res) {
 
 
 /**
- * delete by id
+ * delete Catalog
  * @param id
+ * @param user
  */
-app.post("/delete/id", function(req, res) {
+app.post("/user/delCatalog", function(req, res) {
     var whereStr = {
-        _id: { $eq: ObjectID(req.body.id) }
+        _id: { $eq: ObjectID(req.body.id) },
+        createUser: { $eq: req.body.user }
     }; // 查询条件
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable");
-        dbo.collection("schedule").deleteMany(whereStr, function(err, obj) {
+        dbo.collection("schedule").deleteOne(whereStr, function(err, obj) {
             if (err) {
                 db.close();
                 console.log("error")
@@ -328,16 +324,20 @@ app.post("/delete/id", function(req, res) {
 /**
  * delete class
  * @param id
+ * @param user
  * @param key
  */
-app.post("/delete/course", function(req, res) {
+app.post("/user/delClass", function(req, res) {
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable");
         dbo.collection("schedule").find({
-            _id: { $eq: ObjectID(req.body.id) }
+            _id: {
+                $eq: ObjectID(req.body.id)
+            },
+            createUser: { $eq: req.body.user }
         }).project({
             course_info: 1,
         }).toArray(function(err, result) {

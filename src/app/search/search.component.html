@@ -465,11 +465,11 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">{{item.subject}} {{item.catalog_nbr}} - {{item.className}}</h4>
-                                    <div class="tt-div" >
-                                        <!-- *ngIf="isCreateUser(item.createUser)" -->
-                                        <button class="btn btn-info tt-btn" >Revise</button>
+                                    <div class="tt-div" *ngIf="isCreateUser(item.createUser)">
+                                        
+                                        <button class="btn btn-info tt-btn" (click)="nowClassID(item._id)">Revise</button>
                                         <button class="btn btn-success tt-btn" data-toggle="modal" data-target="#addCmodal" (click)="nowClassID(item._id)">Add Class</button>
-                                        <button class="btn btn-danger tt-btn">Delete</button>
+                                        <button class="btn btn-danger tt-btn" (click)="delCatalog(item._id)">Delete</button>
                                     </div>
                                     <p class="font-md"><b>Course Description:</b> {{item.catalog_description}}</p>
                                 </div>
@@ -493,7 +493,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr *ngFor="let val of item.course_info">
+                                                <tr *ngFor="let val of item.course_info;let key=index">
                                                     <td>{{val.class_section}}</td>
                                                     <td>{{val.ssr_component}}</td>
                                                     <td>{{val.class_nbr}}</td>
@@ -529,9 +529,8 @@
                                                     <td>
                                                         Distance Studies/Online
                                                     </td>
-                                                    <td >
-                                                        <!-- *ngIf="isCreateUser(item.createUser)" -->
-                                                        <button class="btn btn-warning tt-btn-td"
+                                                    <td  *ngIf="isCreateUser(item.createUser)">
+                                                        <button class="btn btn-warning tt-btn-td" (click)="delClass(item._id,key)"
                                                             >Delete</button>
                                                         <button class="btn btn-info tt-btn-td"
                                                             >Revise</button>
@@ -550,7 +549,7 @@
 
     </div>
 </div>
-<div class="modal fade " #addCmodal id="addCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade " id="addCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
