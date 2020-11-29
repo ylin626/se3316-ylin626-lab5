@@ -19,7 +19,7 @@ app.all("*", function(req, res, next) {
 });
 
 /**
- * 1.get all subject
+ * get 20 subject
  */
 app.get("/visitor/all", function(req, res) {
     MongoClient.connect(url, {
@@ -42,7 +42,7 @@ app.get("/visitor/all", function(req, res) {
 
 
 /**
- * 3.1 get scheduleList by Subject, Course Suffix, Component, Starting Time, Ending Time, Day of Class, Campus
+ * get by Subject, Course Suffix, Component, Starting Time, Ending Time, Day of Class, Campus
  * @param subject
  * @param designation
  * @param component
@@ -52,7 +52,6 @@ app.get("/visitor/all", function(req, res) {
  * @param locationCode
  */
 app.post("/visitor/findinfo", function(req, res) {
-    console.log(req.body)
     var elem = {};
     var key = {}
     if (req.body.subject != "") {
@@ -80,7 +79,6 @@ app.post("/visitor/findinfo", function(req, res) {
         $elemMatch: elem
     }
     console.log(key);
-    console.log(elem.days);
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
@@ -98,45 +96,11 @@ app.post("/visitor/findinfo", function(req, res) {
         })
     })
 });
-/**
- * 3.2 get scheduleList by subject and className and component
- * @param subject
- * @param className
- * @param component
- */
-app.post("/schedule/subjectCourseComponent", function(req, res) {
-    var key = {
-        subject: req.body.subject,
-        className: req.body.className,
-        course_info: {
-            $elemMatch: {
-                ssr_component: {
-                    $eq: req.body.component
-                }
-            }
-        }
-    }
 
-    MongoClient.connect(url, {
-        useNewUrlParser: true
-    }, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).project({}).toArray(function(err, result) {
-            if (err) throw err;
-            db.close();
-            res.send({
-                status: 200,
-                text: "find successful！",
-                data: result
-            });
-        })
-    })
-})
 
 
 /**
- * 4.Create a new schedule with a given schedule name. Return an error if name exists.
+ * Create a new schedule with a given schedule name. Return an error if name exists.
  * @param catalogNbr
  * @param subject
  * @param className
@@ -168,7 +132,7 @@ app.post("/add/schedule", function(req, res) {
 })
 
 /**
- * 5.Save a list of subject code, course code pairs under a given schedule name. 
+ * .Save a list of subject code, course code pairs under a given schedule name. 
  * Return an error if the schedule name does not exist. 
  * Replace existing subject-code + course-code pairs with new values and create new pairs if it doesn’t exist.
  * @param id
@@ -240,45 +204,10 @@ app.post("/add/course", function(req, res) {
     })
 })
 
-/**
- * 6.get scheduleList by catalogNbr and classNbr
- * @param catalogNbr
- * @param classNbr
- */
-app.post("/schedule/catalogAndClassNbr", function(req, res) {
-    console.log(req.body.classNbr)
-    var key = {
-        catalog_nbr: req.body.catalogNbr,
-        course_info: {
-            $elemMatch: {
-                class_nbr: {
-                    $eq: parseInt(req.body.classNbr)
-                }
-            }
-        }
-    }
 
-    MongoClient.connect(url, {
-        useNewUrlParser: true
-    }, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).project({
-            course_info: 1
-        }).toArray(function(err, result) {
-            if (err) throw err;
-            db.close();
-            res.send({
-                status: 200,
-                text: "find successful！",
-                data: result
-            });
-        })
-    })
-})
 
 /**
- * 7.delete by subjectName
+ * delete by subjectName
  * @param subject
  */
 app.post("/delete/subject", function(req, res) {
@@ -316,46 +245,10 @@ app.post("/delete/subject", function(req, res) {
     });
 })
 
-/**
- * 8.Get a list of schedule names and the number of courses that are saved in each schedule
- */
-app.post("/schedule/coursesNumber", function(req, res) {
-    MongoClient.connect(url, {
-        useNewUrlParser: true
-    }, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("timeTable")
-        dbo.collection("schedule").aggregate([{
-                "$group": {
-                    _id: "$subject",
-                    num_courses: { $sum: 1 }
-                }
-            }, ]).toArray(function(err, result) {
-                if (err) throw err;
-                db.close();
-                res.send({
-                    status: 200,
-                    text: "find successful！",
-                    data: result
-                });
-            })
-            // dbo.collection("schedule").find({}).project({
-            //     course_info: 1
-            // }).toArray(function (err, result) {
-            //     if (err) throw err;
-            //     db.close();
-            //     res.send({
-            //         status: 200,
-            //         text: "find successful！",
-            //         data: result
-            //     });
-            // })
-    })
-})
 
 
 /**
- * 9.delete all
+ * delete all
  */
 app.post("/delete/all", function(req, res) {
     MongoClient.connect(url, {
@@ -381,78 +274,11 @@ app.post("/delete/all", function(req, res) {
     });
 })
 
-/**
- * 10.get scheduleList by subject
- * @param subject
- */
-app.post("/schedule/subject", function(req, res) {
-    var key = {
-        subject: {
-            $eq: req.body.subject
-        }
-    }
-
-    MongoClient.connect(url, {
-        useNewUrlParser: true
-    }, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).project({
-            subject: 1,
-            className: 1,
-            catalog_nbr: 1
-        }).toArray(function(err, result) {
-            if (err) throw err;
-            db.close();
-            res.send({
-                status: 200,
-                text: "find successful！",
-                data: result
-            });
-        })
-    })
-})
-
-/**
- * 11.get scheduleList by subject and className
- * @param subject
- * @param className
- */
-app.post("/schedule/subjectAndCourse", function(req, res) {
-    var key = {
-        subject: {
-            $eq: req.body.subject
-        },
-        className: {
-            $eq: req.body.className
-        }
-    }
-
-    MongoClient.connect(url, {
-        useNewUrlParser: true
-    }, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).project({
-            subject: 1,
-            className: 1,
-            catalog_nbr: 1
-        }).toArray(function(err, result) {
-            if (err) throw err;
-            db.close();
-            res.send({
-                status: 200,
-                text: "find successful！",
-                data: result
-            });
-        })
-    })
-})
 
 
 
 /**
- * 12.delete by id
+ * delete by id
  * @param id
  */
 app.post("/delete/id", function(req, res) {
@@ -493,7 +319,7 @@ app.post("/delete/id", function(req, res) {
 
 
 /**
- * 13.delete course
+ * delete class
  * @param id
  * @param key
  */
