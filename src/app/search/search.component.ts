@@ -72,7 +72,7 @@ export class SearchComponent implements OnInit {
     if (this.keyword.length < 4) {
       alert("The key must longer then 4 chars!")
     } else {
-      this.http.get("http://127.0.0.1:3000/visitor/all").subscribe((res: any) => {
+      this.http.post("http://127.0.0.1:3000/visitor/findbykeyword",{"keyword":this.keyword},this.httpOptions).subscribe((res: any) => {
         console.log(res.data)
         this.list = res.data;
       })

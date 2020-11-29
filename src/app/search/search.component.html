@@ -302,7 +302,7 @@
                                 <label for="inputDesignation" style="margin: 0 10px;">Course Suffix:</label>
                                 <select name="designation" id="inputDesignation" [(ngModel)]="designation">
                                     <option value="" selected="">Any (any suffix)</option>
-                                    <option value="Full">Full Course Not Designated As An Essay Course (no suffix)
+                                    <option value="[0-9]">Full Course Not Designated As An Essay Course (no suffix)
                                     </option>
                                     <option value="E">Essay Full Course (E)</option>
                                     <option value="A">First Term Half-Course (A)</option>
@@ -464,7 +464,7 @@
                         <span *ngFor="let item of list">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">{{item.className}}</h4>
+                                    <h4 class="card-title">{{item.subject}} {{item.catalog_nbr}} - {{item.className}}</h4>
                                     <div class="tt-div">
                                         <button class="btn btn-info tt-btn" *ngIf="isLogin">Revise</button>
                                         <button class="btn btn-success tt-btn" *ngIf="isLogin">Add Class</button>
@@ -528,11 +528,11 @@
                                                     <td>
                                                         Distance Studies/Online
                                                     </td>
-                                                    <td *ngIf="login">
+                                                    <td *ngIf="isLogin">
                                                         <button class="btn btn-warning tt-btn-td"
-                                                            *ngIf="isLogin">Delete</button>
+                                                            >Delete</button>
                                                         <button class="btn btn-info tt-btn-td"
-                                                            *ngIf="isLogin">Revise</button>
+                                                            >Revise</button>
                                                     </td>
                                                 </tr>
                                             </tbody>

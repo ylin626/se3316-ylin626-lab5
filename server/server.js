@@ -30,6 +30,7 @@ app.get("/visitor/all", function(req, res) {
         dbo.collection("schedule").find({}).limit(20).toArray(function(err, result) {
             if (err) throw err;
             db.close();
+            console.log(result.length)
             res.send({
                 status: 200,
                 text: "find successful！",
@@ -58,7 +59,7 @@ app.post("/visitor/findinfo", function(req, res) {
         key.subject = req.body.subject;
     }
     if (req.body.designation != "") {
-        key.className = new RegExp(`${req.body.designation}$`);
+        key.catalog_nbr = new RegExp(`${req.body.designation}$`);
     }
     if (req.body.component != "") {
         elem.ssr_component = req.body.component;
@@ -77,6 +78,41 @@ app.post("/visitor/findinfo", function(req, res) {
     }
     key.course_info = {
         $elemMatch: elem
+    }
+    console.log(key);
+    console.log(elem.days)
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("schedule").find(key).project({}).toArray(function(err, result) {
+            if (err) throw err;
+            db.close();
+            console.log(result.length)
+            res.send({
+                status: 200,
+                text: "find successful！",
+                data: result
+            });
+        })
+    })
+});
+
+/**
+ * get by Subject, Course Suffix, Component, Starting Time, Ending Time, Day of Class, Campus
+ * @param keyword
+ */
+app.post("/visitor/findbykeyword", function(req, res) {
+    var kw = "";
+    for (var i = 0; i < req.body.keyword.length; i++) {
+        kw += req.body.keyword[i] + ".*";
+    }
+    var key = {
+        $or: [
+            { catalog_nbr: new RegExp(`${kw}`, "i") },
+            { className: new RegExp(`${kw}`, "i") }
+        ]
     }
     console.log(key);
     MongoClient.connect(url, {
@@ -250,7 +286,7 @@ app.post("/delete/subject", function(req, res) {
 /**
  * delete all
  */
-app.post("/delete/all", function(req, res) {
+app.get("/delete/all", function(req, res) {
     MongoClient.connect(url, {
         useNewUrlParser: true
     }, function(err, db) {
