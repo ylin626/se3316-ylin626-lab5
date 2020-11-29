@@ -17,7 +17,7 @@ export class RegisterComponent implements OnInit {
   actionCodeSettings = {
     // URL you want to redirect back to. The domain (www.example.com) for this
     // URL must be in the authorized domains list in the Firebase Console.
-    url: 'http://localhost:4200/'
+    url: 'http://localhost:4200/login'
   }
 
   user: Observable<firebase.User>;
@@ -40,10 +40,16 @@ export class RegisterComponent implements OnInit {
           .createUserWithEmailAndPassword(this.email,this.password)
           .then(value =>{
             this.firebaseAuth.currentUser.then(user =>{
-              user.sendEmailVerification(this.actionCodeSettings);
+              user.sendEmailVerification();
+              user.updateProfile({displayName:this.name});
             }).then( ()=>{
+              alert("Register Successful!")
+              window.localStorage.setItem("userEmail",this.email)
+              window.location.href = "/login"
             })
-            alert("Register Successful!")
+            .catch(e => {
+              alert(e.message)
+            })
           })
           .catch(err =>{
             alert(err.message)
