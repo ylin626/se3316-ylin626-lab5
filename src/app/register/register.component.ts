@@ -43,7 +43,7 @@ export class RegisterComponent implements OnInit {
               user.sendEmailVerification();
               user.updateProfile({displayName:this.name});
             }).then( ()=>{
-              alert("Register Successful!")
+              alert("Register Successful!\nPlease check your email to complete the verification~")
               window.localStorage.setItem("userEmail",this.email)
               window.location.href = "/login"
             })

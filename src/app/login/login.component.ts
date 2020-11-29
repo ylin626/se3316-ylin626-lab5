@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
       .then((value: any) => {
         if (value.user.emailVerified == true ) {
             alert("Login Successful!")
+            window.localStorage.setItem("userEmail",this.email);
             window.localStorage.setItem("isLogin", "true");
             window.localStorage.setItem("userName", value.user.displayName);
             window.location.href = "/search"
