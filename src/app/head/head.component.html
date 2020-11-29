@@ -25,8 +25,7 @@
                 <span>{{userName}}</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#addCLmodal"><i data-feather="addCl" class="mr-1" ></i> Add Catalog</a>
-                <a class="dropdown-item" href="/myTimetable"><i data-feather="myTimetable" class="mr-1"></i> My Timetable</a>
+                <a *ngIf="isLogin" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#addCLmodal"><i data-feather="addCl" class="mr-1" ></i> Add Catalog</a>
                 <a class="dropdown-item" routerLink="/login" (click)="logout()"><i data-feather="log-out" class="mr-1"></i> {{isLogin?"Logout":"Login"}}</a>
             </div>
         </li>

@@ -444,10 +444,12 @@
 
                         </div>
                         <div class="row">
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
                                 <label for="inputKeyWord" style="margin: 0 10px;">Search by key:</label>
                                 <input style="margin: 0 10px;" name="keyword" id="inpinputKeyWordutCampus" type="text" [(ngModel)]="keyword">
                                 <button type="submit" class="btn btn-success" autofocus="" style="margin: 0 10px;" (click)="search()">Submit</button>
+                                <button type="submit" class="btn btn-info" autofocus="" style="margin: 0 10px;" (click)="getAll()">Public Catalog</button>
+                                <button type="submit" class="btn btn-primary" autofocus="" style="margin: 0 10px;" (click)="getMyCatalog()">My Catalog</button>
                             </div>
                             <br><br>
                         </div>

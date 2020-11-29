@@ -37,6 +37,7 @@ export class HeadComponent implements OnInit {
   logout(){
     window.localStorage.removeItem("isLogin");
     window.localStorage.removeItem("userName");
+    this.isLogin=false;
     this.userName="Visitor";
   }
   addCatalog(){
@@ -54,6 +55,11 @@ export class HeadComponent implements OnInit {
         })
       }
     }
+  }
+  getMyCatalog(){
+    this.http.post("http://127.0.0.1:3000/user/myCatalog",{"user":window.localStorage.getItem("userEmail")} , this.httpOptions).subscribe((res: any) => {
+          return res.data;
+        })
   }
 
 }

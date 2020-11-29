@@ -83,7 +83,7 @@ app.post("/visitor/findinfo", function(req, res) {
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).sort({ reviseTime: 1 }).toArray(function(err, result) {
+        dbo.collection("schedule").find(key).sort({ reviseTime: -1 }).toArray(function(err, result) {
             if (err) throw err;
             db.close();
             console.log(result.length)
@@ -116,13 +116,40 @@ app.post("/visitor/findbykeyword", function(req, res) {
     }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("timeTable")
-        dbo.collection("schedule").find(key).sort({ reviseTime: 1 }).toArray(function(err, result) {
+        dbo.collection("schedule").find(key).sort({ reviseTime: -1 }).toArray(function(err, result) {
             if (err) throw err;
             db.close();
             console.log(result.length)
             res.send({
                 status: 200,
                 text: "find successful！",
+                data: result
+            });
+        })
+    })
+});
+
+
+/**
+ * get my catalog
+ * @param user
+ */
+app.post("/user/myCatalog", function(req, res) {
+    var key = {
+        createUser: { $eq: req.body.user }
+    }
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("schedule").find(key).sort({ reviseTime: -1 }).toArray(function(err, result) {
+            if (err) throw err;
+            db.close();
+            console.log(result.length)
+            res.send({
+                status: 200,
+                text: "get successful！",
                 data: result
             });
         })

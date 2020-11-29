@@ -66,14 +66,18 @@ export class SearchComponent implements OnInit {
 
 
   constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth) {
-    this.http.get("http://127.0.0.1:3000/visitor/all").subscribe((res: any) => {
-      this.list = res.data;
-    })
+    this.getAll();
     if (window.localStorage.getItem("isLogin") == "true") {
       this.isLogin = true;
     } else {
       this.isLogin = false;
     }
+  }
+
+  getAll(){
+    this.http.get("http://127.0.0.1:3000/visitor/all").subscribe((res: any) => {
+      this.list = res.data;
+    })
   }
 
   ngOnInit(): void {
@@ -110,6 +114,13 @@ export class SearchComponent implements OnInit {
       })
     }
   }
+
+  getMyCatalog(){
+    this.http.post("http://127.0.0.1:3000/user/myCatalog",{"user":window.localStorage.getItem("userEmail")} , this.httpOptions).subscribe((res: any) => {
+        this.list=res.data;
+      })
+  }
+
   addClass() {
     if (this.addCdata.class_nbr == "" ||
       this.addCdata.class_section == "" ||
