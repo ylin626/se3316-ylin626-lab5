@@ -467,7 +467,7 @@
                         <span *ngFor="let item of list">
                             <div class="card" *ngIf="isPrivate(item)">
                                 <div class="card-header">
-                                    <h4 class="card-title">{{item.subject}} {{item.catalog_nbr}} - {{item.className}}</h4><i><b>Last edit time:</b>{{item.reviseTime}} &nbsp; <b>Creator:</b>{{item.createUser}} &nbsp;<b>Number of courses:</b>{{item.course_info.length}}</i>
+                                    <h4 class="card-title">{{item.subject}} {{item.catalog_nbr}} - {{item.className}}</h4><i><b>Last edit time:</b>{{item.reviseTime}} &nbsp; <b>Creator:</b>{{item.createUserName}} &nbsp;<b>Number of courses:</b>{{item.course_info.length}}</i>
                                     <div class="tt-div" *ngIf="isCreateUser(item.createUser)">
                                         
                                         <button class="btn btn-info tt-btn" (click)="nowClassID(item._id)" data-target="#addCLmodal" data-toggle="modal" (click)="nowRClass(item)" >Revise</button>

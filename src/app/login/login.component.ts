@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
-import { JwtHelperService } from "@auth0/angular-jwt";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -14,7 +13,7 @@ export class LoginComponent implements OnInit {
   password = "";
 
   user: Observable<firebase.User>;
-  constructor(private firebaseAuth: AngularFireAuth, private router: ActivatedRoute,private jwt:JwtHelperService) {
+  constructor(private firebaseAuth: AngularFireAuth, private router: ActivatedRoute) {
     this.email = window.localStorage.getItem("userEmail");
     this.router.queryParams.subscribe((data) => {
       if (data.oobCode) {

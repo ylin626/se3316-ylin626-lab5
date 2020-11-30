@@ -53,6 +53,7 @@ export class SearchComponent implements OnInit {
       catalog_description:"",
       subject:"ACTURSCI",
       createUser:this.jwt.decodeToken(window.localStorage.getItem("token")).user_id,
+      createUserName:this.jwt.decodeToken(window.localStorage.getItem("token")).name,
       power:"1"
     }
     //addClass
