@@ -16204,6 +16204,26 @@ var timeTable = [{
         "catalog_description": "A practical introduction to the basics of successful academic writing, designed for first-year students in all disciplines. Topics will range from grammar, sentence structure, and paragraphing to the principles of scholarly argument and research. \n\nAntirequisite(s): Writing 0002F/G, Writing 1002F/G, Writing 1021F/G, Writing 1022F/G, Writing 2101F/G.\n\nExtra Information: 3 lecture/tutorial hours. [This course will not serve as a prerequisite for any area of concentration]"
     }
 ]
+
+function dateFormat(fmt, date) {
+    let ret;
+    const opt = {
+        "Y+": date.getFullYear().toString(), // 年
+        "m+": (date.getMonth() + 1).toString(), // 月
+        "d+": date.getDate().toString(), // 日
+        "H+": date.getHours().toString(), // 时
+        "M+": date.getMinutes().toString(), // 分
+        "S+": date.getSeconds().toString() // 秒
+            // 有其他格式化字符需求可以继续添加，必须转化成字符串
+    };
+    for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+    };
+    return fmt;
+}
 let mongo = require('mongodb');
 let MongoClient = mongo.MongoClient;
 let db;
@@ -16250,8 +16270,7 @@ function initDB(client) {
     timeTable.forEach(element => {
         element.catalog_nbr = element.catalog_nbr.toString();
         element.createUser = "Admin";
-        element.reviseTime = new Date();
-
+        element.reviseTime = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
     });
     db.collection("schedule").insertMany(timeTable, function(err, result) {
         if (err) throw err;
@@ -16259,4 +16278,9 @@ function initDB(client) {
         process.exit();
         db.close();
     });
+    // db.collection("schedule").deleteMany({}, function(err, result) {
+    //     if (err) throw err;
+    //     process.exit();
+    //     db.close();
+    // });
 }
