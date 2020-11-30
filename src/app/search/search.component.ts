@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { NgForOf } from '@angular/common';
+import { HeadComponent } from '../head/head.component';
+
 
 @Component({
   selector: 'app-search',
@@ -14,9 +14,9 @@ export class SearchComponent implements OnInit {
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' })
   };
-
-  //search by keyword
   keyword = "";
+   //add catalog
+   addCLdata:any={}
 
   //find by
   designation = "";
@@ -31,6 +31,7 @@ export class SearchComponent implements OnInit {
   e_time = "";
   component = "";
   locationCode = "";
+ 
 
   //data in html
   list = [];
@@ -40,32 +41,49 @@ export class SearchComponent implements OnInit {
 
   //addClass
   c_id = "";
-  addCdata = {
-    class_nbr: "",
-    class_section: "",
-    facility_ID: "",
-    descrlong: "",
-    descr: "",
-    days: [],
-    start_time: "8:00 am",
-    end_time: "9:30 am",
-    ssr_component: "LEC",
-    enrl_stat: "Not Full",
-    campus: "Main"
+  addCdata: any = {}
+  inputdays = [];
+
+  revise_key=-1;
+
+  init() {
+    this.addCLdata={
+      catalog_nbr:"",
+      className:"",
+      catalog_description:"",
+      subject:"ACTURSCI",
+      createUser:window.localStorage.getItem("userEmail"),
+      power:"1"
+    }
+    //addClass
+    this.c_id = "";
+    this.addCdata = {
+      class_nbr: "",
+      class_section: "",
+      facility_ID: "",
+      descrlong: "",
+      descr: "",
+      days: [],
+      start_time: "8:00 am",
+      end_time: "9:30 am",
+      ssr_component: "LEC",
+      enrl_stat: "Not Full",
+      campus: "Main"
+    }
+    this.inputdays = [{ name: "Mon", value: "M", isChecked: true },
+    { name: "Tue", value: "Tu", isChecked: true },
+    { name: "Wed", value: "W", isChecked: true },
+    { name: "Thu", value: "Th", isChecked: true },
+    { name: "Fri", value: "F", isChecked: true }
+    ];
   }
-  inputdays = [{ name: "Mon", value: "M", isChecked: true },
-  { name: "Tue", value: "Tu", isChecked: true },
-  { name: "Wed", value: "W", isChecked: true },
-  { name: "Thu", value: "Th", isChecked: true },
-  { name: "Fri", value: "F", isChecked: true }
-  ];
 
 
 
-
-
+  
 
   constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth) {
+    this.init();
     this.getAll();
     if (window.localStorage.getItem("isLogin") == "true") {
       this.isLogin = true;
@@ -74,14 +92,14 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  getAll(){
+  getAll() {
     this.http.get("http://127.0.0.1:3000/visitor/all").subscribe((res: any) => {
       this.list = res.data;
     })
   }
 
   ngOnInit(): void {
-
+   
   }
   submit() {
     var dayS = [];
@@ -115,10 +133,10 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  getMyCatalog(){
-    this.http.post("http://127.0.0.1:3000/user/myCatalog",{"user":window.localStorage.getItem("userEmail")} , this.httpOptions).subscribe((res: any) => {
-        this.list=res.data;
-      })
+  getMyCatalog() {
+    this.http.post("http://127.0.0.1:3000/user/myCatalog", { "user": window.localStorage.getItem("userEmail") }, this.httpOptions).subscribe((res: any) => {
+      this.list = res.data;
+    })
   }
 
   addClass() {
@@ -127,8 +145,8 @@ export class SearchComponent implements OnInit {
       this.addCdata.facility_ID == "") {
       alert("The first three items cannot be empty.")
     } else {
-      if (this.addCdata.class_nbr.length < 4) {
-        alert("The Class Nbr cannot less than 4 chars.")
+      if (this.addCdata.class_nbr.length < 4 || this.addCdata.class_nbr.length>5) {
+        alert("The Class Nbr cannot less than 4 chars and more than 5 chars.")
       } else {
         var dayS = [];
         for (var i = 0; i < this.inputdays.length; i++) {
@@ -137,28 +155,64 @@ export class SearchComponent implements OnInit {
           }
         }
         this.addCdata.days = dayS;
-        this.http.post("http://127.0.0.1:3000/user/addClass", { "id": this.c_id, "data": this.addCdata }, this.httpOptions).subscribe((res: any) => {
-          alert(res.text);
-          window.location.reload();
-        })
+        if (this.revise_key == -1) {
+          this.http.post("http://127.0.0.1:3000/user/addClass", { "id": this.c_id, "data": this.addCdata }, this.httpOptions).subscribe((res: any) => {
+            alert(res.text);
+            window.location.reload();
+          })
+        } else {
+          this.http.post("http://127.0.0.1:3000/user/reviseClass", { "id": this.c_id, "data": this.addCdata,"key":this.revise_key }, this.httpOptions).subscribe((res: any) => {
+            alert(res.text);
+            window.location.reload();
+          })
+        }
+
       }
     }
 
 
   }
-  delClass(id,key){
-    this.http.post("http://127.0.0.1:3000/user/delClass", { "id": id, "user":window.localStorage.getItem("userEmail"),"key":key }, this.httpOptions).subscribe((res: any) => {
+  delClass(id, key) {
+    if (confirm("Are you sure you want to delete this?")) {
+      this.http.post("http://127.0.0.1:3000/user/delClass", { "id": id, "user": window.localStorage.getItem("userEmail"), "key": key }, this.httpOptions).subscribe((res: any) => {
+        alert(res.text);
+        window.location.reload();
+      })
+    }
+
+  }
+  addCatalog(){
+    if (this.addCLdata.catalog_nbr == "" ||
+      this.addCLdata.className == "" ||
+      this.addCLdata.catalog_description == "") {
+      alert("The first three items cannot be empty.")
+    } else {
+      if (this.addCLdata.catalog_nbr.length < 4 || this.addCLdata.catalog_nbr.length>5) {
+        alert("The Class Nbr cannot less than 4 chars and more than 5 chars.")
+      } else {
+        if (this.revise_key == -1) {
+        this.http.post("http://127.0.0.1:3000/user/addCatalog",this.addCLdata , this.httpOptions).subscribe((res: any) => {
           alert(res.text);
           window.location.reload();
-      })
+        })
+      }else{
+        this.http.post("http://127.0.0.1:3000/user/reviseCatalog",this.addCLdata , this.httpOptions).subscribe((res: any) => {
+          alert(res.text);
+          window.location.reload();
+        })
+      }
+      }
+    }
   }
 
 
-  delCatalog(id){
-    this.http.post("http://127.0.0.1:3000/user/delCatalog", { "id": id, "user":window.localStorage.getItem("userEmail") }, this.httpOptions).subscribe((res: any) => {
-          alert(res.text);
-          window.location.reload();
+  delCatalog(id) {
+    if (confirm("Are you sure you want to delete this?")) {
+      this.http.post("http://127.0.0.1:3000/user/delCatalog", { "id": id, "user": window.localStorage.getItem("userEmail") }, this.httpOptions).subscribe((res: any) => {
+        alert(res.text);
+        window.location.reload();
       })
+    }
   }
 
   isDayHave(day, days) {
@@ -180,4 +234,33 @@ export class SearchComponent implements OnInit {
     this.c_id = id;
   }
 
+  nowRClassID(id, key, val) {
+    this.revise_key=key;
+    this.c_id = id;
+    this.addCdata = {...val};
+    for (var i = 0; i < this.inputdays.length; i++) {
+      if (this.isInArr(this.inputdays[i].value, val.days)) {
+        this.inputdays[i].isChecked = true;
+      } else {
+        this.inputdays[i].isChecked = false;
+      }
+    }
+  }
+  isInArr(key, arr) {
+    for (var i = 0; i < arr.length; i++) {
+      if (key == arr[i]) {
+        return true;
+      }
+    }
+    return false;
+    
+  }
+  closeModal(){
+    this.init(); 
+    this.revise_key=-1;    
+  }
+  nowRClass(val){
+    this.addCLdata={...val};
+    this.revise_key=0;
+  }
 }

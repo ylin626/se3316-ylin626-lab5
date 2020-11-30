@@ -1,25 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { SearchComponent } from '../search/search.component';
 @Component({
   selector: 'app-head',
   templateUrl: './head.component.html',
   styleUrls: ['./head.component.scss']
 })
 export class HeadComponent implements OnInit {
-  //add catalog
-  addCLdata={
-    catalog_nbr:"",
-    className:"",
-    catalog_description:"",
-    subject:"ACTURSCI",
-    createUser:window.localStorage.getItem("userEmail")
-  }
-
-  //http Header
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' })
-  };
+ 
 
   isLogin = false;
   userName="";
@@ -40,26 +28,5 @@ export class HeadComponent implements OnInit {
     this.isLogin=false;
     this.userName="Visitor";
   }
-  addCatalog(){
-    if (this.addCLdata.catalog_nbr == "" ||
-      this.addCLdata.className == "" ||
-      this.addCLdata.catalog_description == "") {
-      alert("The first three items cannot be empty.")
-    } else {
-      if (this.addCLdata.catalog_nbr.length < 4) {
-        alert("The Class Nbr cannot less than 4 chars.")
-      } else {
-        this.http.post("http://127.0.0.1:3000/user/addCatalog",this.addCLdata , this.httpOptions).subscribe((res: any) => {
-          alert(res.text);
-          window.location.reload();
-        })
-      }
-    }
-  }
-  getMyCatalog(){
-    this.http.post("http://127.0.0.1:3000/user/myCatalog",{"user":window.localStorage.getItem("userEmail")} , this.httpOptions).subscribe((res: any) => {
-          return res.data;
-        })
-  }
-
+  
 }
