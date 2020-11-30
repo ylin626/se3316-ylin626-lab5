@@ -1004,6 +1004,13 @@
 
 
                 </div>
+                <div class="row">
+                    <label for="inputPower" style="margin: 0 10px;">Power:</label>
+                    <div id="inputPower">
+                        <input type="radio" name="power" id="power-1" [(ngModel)]="addCLdata.power" value="1"><label for="power-1">public</label>
+                        <input type="radio" name="power" id="power-0" [(ngModel)]="addCLdata.power" value="0"><label for="power-0">private</label>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModal()">close</button>

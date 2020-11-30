@@ -232,7 +232,8 @@ app.post("/user/reviseCatalog", function(req, res) {
         catalog_nbr: req.body.catalog_nbr,
         subject: req.body.subject,
         className: req.body.className,
-        catalog_description: req.body.catalog_description
+        catalog_description: req.body.catalog_description,
+        power: req.body.power
     };
     MongoClient.connect(url, {
         useNewUrlParser: true
