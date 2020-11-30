@@ -191,29 +191,43 @@ app.post("/user/addCatalog", function(req, res) {
         if (err) throw err;
         var dbo = db.db("timeTable")
         dbo.collection("schedule").find({
-            catalog_nbr: { $eq: req.body.catalog_nbr }
-        }).toArray(function(e, rst) {
-            if (e) throw e;
-            if (rst.length > 0) {
+            createUser: { $eq: req.body.createUser }
+        }).toArray(function(err, rst) {
+            if (err) throw err;
+            if (rst.length == 20) {
                 db.close();
                 res.send({
                     status: 400,
-                    text: "Add Faild！Nbr already used."
+                    text: "Add Faild！You can only have up to 20 catalogues."
                 });
-
             } else {
-                dbo.collection("schedule").insertOne(req.body, function(err, result) {
-                    if (err) throw err;
-                    db.close();
-                    res.send({
-                        status: 200,
-                        text: "Add Successful！"
-                    });
-                });
+                dbo.collection("schedule").find({
+                    catalog_nbr: { $eq: req.body.catalog_nbr }
+                }).toArray(function(e, rst) {
+                    if (e) throw e;
+                    if (rst.length > 0) {
+                        db.close();
+                        res.send({
+                            status: 400,
+                            text: "Add Faild！Nbr already used."
+                        });
+
+                    } else {
+                        dbo.collection("schedule").insertOne(req.body, function(err, result) {
+                            if (err) throw err;
+                            db.close();
+                            res.send({
+                                status: 200,
+                                text: "Add Successful！"
+                            });
+                        });
+                    }
+
+
+                })
             }
-
-
         })
+
 
     })
 })
