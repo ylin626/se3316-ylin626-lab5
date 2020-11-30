@@ -263,4 +263,13 @@ export class SearchComponent implements OnInit {
     this.addCLdata={...val};
     this.revise_key=0;
   }
+  isPrivate(val){
+    if(window.localStorage.getItem("userEmail")==val.createUser){
+      return true;
+    }else if(val.power=="0"){
+      return false;
+    }
+    return true;
+    
+  }
 }

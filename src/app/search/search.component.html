@@ -465,7 +465,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <span *ngFor="let item of list">
-                            <div class="card">
+                            <div class="card" *ngIf="isPrivate(item)">
                                 <div class="card-header">
                                     <h4 class="card-title">{{item.subject}} {{item.catalog_nbr}} - {{item.className}}</h4><i><b>Last edit time:</b>{{item.reviseTime}} &nbsp; <b>Creator:</b>{{item.createUser}} &nbsp;<b>Number of courses:</b>{{item.course_info.length}}</i>
                                     <div class="tt-div" *ngIf="isCreateUser(item.createUser)">
