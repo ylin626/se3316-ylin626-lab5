@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
-
+import { JwtHelperService } from "@auth0/angular-jwt";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   password = "";
 
   user: Observable<firebase.User>;
-  constructor(private firebaseAuth: AngularFireAuth, private router: ActivatedRoute) {
+  constructor(private firebaseAuth: AngularFireAuth, private router: ActivatedRoute,private jwt:JwtHelperService) {
     this.email = window.localStorage.getItem("userEmail");
     this.router.queryParams.subscribe((data) => {
       if (data.oobCode) {
@@ -35,12 +35,16 @@ export class LoginComponent implements OnInit {
     this.firebaseAuth
       .signInWithEmailAndPassword(this.email, this.password)
       .then((value: any) => {
-        if (value.user.emailVerified == true ) {
-            alert("Login Successful!")
-            window.localStorage.setItem("userEmail",this.email);
-            window.localStorage.setItem("isLogin", "true");
-            window.localStorage.setItem("userName", value.user.displayName);
-            window.location.href = "/search"
+        if (value.user.emailVerified == true) {
+          this.firebaseAuth.currentUser.then((user: any) => {
+            user.getIdToken().then(token => {
+              window.localStorage.setItem("token", token);
+              alert("Login Successful!")
+              window.localStorage.setItem("isLogin", "true");
+              window.localStorage.setItem("userEmail", this.email);
+              window.location.href = "/search"
+            })
+          })
         } else {
           if (confirm("EMail not verified!\nDo you want to send email again?")) {
             this.firebaseAuth.currentUser.then(user => {

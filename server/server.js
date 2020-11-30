@@ -2,8 +2,8 @@ var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var express = require("express");
 var ObjectID = require('mongodb').ObjectID;
+var jwt = require('jsonwebtoken');
 var app = express();
-var us = {};
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -153,7 +153,7 @@ app.post("/visitor/findbykeyword", function(req, res) {
  */
 app.post("/user/myCatalog", function(req, res) {
     var key = {
-        createUser: { $eq: req.body.user }
+        createUser: { $eq: jwt.decode(req.body.user).user_id }
     }
     MongoClient.connect(url, {
         useNewUrlParser: true

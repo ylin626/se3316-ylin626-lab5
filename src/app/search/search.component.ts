@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { HeadComponent } from '../head/head.component';
+import { JwtHelperService } from "@auth0/angular-jwt";
 
 
 @Component({
@@ -52,7 +52,7 @@ export class SearchComponent implements OnInit {
       className:"",
       catalog_description:"",
       subject:"ACTURSCI",
-      createUser:window.localStorage.getItem("userEmail"),
+      createUser:this.jwt.decodeToken(window.localStorage.getItem("token")).user_id,
       power:"1"
     }
     //addClass
@@ -82,7 +82,7 @@ export class SearchComponent implements OnInit {
 
   
 
-  constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth) {
+  constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth,private jwt:JwtHelperService) {
     this.init();
     this.getAll();
     if (window.localStorage.getItem("isLogin") == "true") {
@@ -134,7 +134,7 @@ export class SearchComponent implements OnInit {
   }
 
   getMyCatalog() {
-    this.http.post("http://127.0.0.1:3000/user/myCatalog", { "user": window.localStorage.getItem("userEmail") }, this.httpOptions).subscribe((res: any) => {
+    this.http.post("http://127.0.0.1:3000/user/myCatalog", { "user": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
       this.list = res.data;
     })
   }
@@ -224,7 +224,7 @@ export class SearchComponent implements OnInit {
     return false;
   }
   isCreateUser(creatUser) {
-    if (creatUser == window.localStorage.getItem("userEmail") && this.isLogin) {
+    if (creatUser == this.jwt.decodeToken(window.localStorage.getItem("token")).user_id && this.isLogin) {
       return true;
     } else {
       return false;
@@ -264,7 +264,7 @@ export class SearchComponent implements OnInit {
     this.revise_key=0;
   }
   isPrivate(val){
-    if(window.localStorage.getItem("userEmail")==val.createUser){
+    if(this.jwt.decodeToken(window.localStorage.getItem("token")).user_id==val.createUser){
       return true;
     }else if(val.power=="0"){
       return false;
