@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { JwtHelperService } from "@auth0/angular-jwt";
 
 
 @Component({
@@ -10,10 +12,14 @@ import { Observable } from 'rxjs';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-  email="";
-  password="";
-  password_c="";
-  name="";
+  //http Header
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' })
+  };
+  email = "";
+  password = "";
+  password_c = "";
+  name = "";
   actionCodeSettings = {
     // URL you want to redirect back to. The domain (www.example.com) for this
     // URL must be in the authorized domains list in the Firebase Console.
@@ -21,46 +27,53 @@ export class RegisterComponent implements OnInit {
   }
 
   user: Observable<firebase.User>;
-  constructor(private firebaseAuth: AngularFireAuth){
-      this.email="";
-      this.password="";
+  constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private jwt: JwtHelperService) {
+    this.email = "";
+    this.password = "";
   }
 
   ngOnInit(): void {
   }
-  register(){
-    if(this.name==""||this.password==""||this.email==""){
+  register() {
+    if (this.name == "" || this.password == "" || this.email == "") {
       alert("Please perfect your registration information!");
-    }else{
-      if(this.password == this.password_c){
-        if(this.password.length<6||this.password.length>16){
+    } else {
+      if (this.password == this.password_c) {
+        if (this.password.length < 6 || this.password.length > 16) {
           alert("The password's length must begin 6 and 16!")
-        }else{
+        } else {
           this.firebaseAuth
-          .createUserWithEmailAndPassword(this.email,this.password)
-          .then(value =>{
-            this.firebaseAuth.currentUser.then(user =>{
-              user.sendEmailVerification();
-              user.updateProfile({displayName:this.name});
-            }).then( ()=>{
-              alert("Register Successful!\nPlease check your email to complete the verification~")
-              window.localStorage.setItem("userEmail",this.email)
-              window.location.href = "/login"
+            .createUserWithEmailAndPassword(this.email, this.password)
+            .then(value => {
+              this.firebaseAuth.currentUser.then(user => {
+                user.sendEmailVerification();
+                user.updateProfile({ displayName: this.name });
+                user.getIdToken().then(token => {
+                  this.http.post("http://127.0.0.1:3000/visitor/register", this.jwt.decodeToken(token), this.httpOptions).subscribe((res: any) => {
+                    console.log(res.data)
+                  })
+                  alert("Register Successful!\nPlease check your email to complete the verification~")
+                  window.localStorage.setItem("userEmail", this.email)
+                  window.location.href = "/login"
+                })
+
+
+
+              })
+                .catch(e => {
+                  alert(e.message)
+                })
             })
-            .catch(e => {
-              alert(e.message)
+            .catch(err => {
+              alert(err.message)
             })
-          })
-          .catch(err =>{
-            alert(err.message)
-          })
         }
-        
-      }else{
+
+      } else {
         alert("Please confirm your password!")
       }
     }
-    
-   
+
+
   }
 }

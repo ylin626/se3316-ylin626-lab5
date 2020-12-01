@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
+import { JwtHelperService } from "@auth0/angular-jwt";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -11,9 +13,13 @@ import { Observable } from 'rxjs';
 export class LoginComponent implements OnInit {
   email = "";
   password = "";
+  //http Header
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' })
+  };
 
   user: Observable<firebase.User>;
-  constructor(private firebaseAuth: AngularFireAuth, private router: ActivatedRoute) {
+  constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private router: ActivatedRoute,private jwt: JwtHelperService) {
     this.email = window.localStorage.getItem("userEmail");
     this.router.queryParams.subscribe((data) => {
       if (data.oobCode) {

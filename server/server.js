@@ -59,6 +59,89 @@ app.get("/visitor/all", function(req, res) {
 });
 
 
+/**
+ * register The first one will be Admin
+ */
+app.post("/visitor/register", function(req, res) {
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("user").find({ type: 1 }).toArray(function(err, result) {
+            if (err) throw err;
+            if (result.length == 0) {
+                req.body.type = 1;
+            } else {
+                req.body.type = 0;
+            }
+            dbo.collection("user").insertOne(req.body, function(err, result) {
+                if (err) throw err;
+
+                db.close();
+                res.send({
+                    status: 200,
+                    text: "Register Successful！",
+                    data: req.body.type
+
+                })
+
+            });
+        })
+    })
+});
+
+
+/**
+ * login
+ */
+app.post("/visitor/login", function(req, res) {
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("user").find({ user_id: req.body.id }).toArray(function(err, reslt) {
+            if (err) throw err;
+            dbo.collection("user").find({ type: 0 }).toArray(function(err, result) {
+                if (err) throw err;
+                db.close();
+                res.send({
+                    status: 200,
+                    text: "Login Successful！",
+                    data: {
+                        type: reslt[0].type,
+                        userList: result
+                    }
+                });
+            })
+        })
+    })
+});
+
+
+
+/**
+ * addAdmin
+ * @param email
+ */
+app.post("/admin/addAdmin", function(req, res) {
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("user").updateOne({ email: req.body.email }, { $set: { type: 1 } }, function(err, result) {
+            if (err) throw err;
+            db.close();
+            res.send({
+                status: 200,
+                text: "Add Successful！"
+            });
+
+        })
+    })
+});
 
 /**
  * get by Subject, Course Suffix, Component, Starting Time, Ending Time, Day of Class, Campus

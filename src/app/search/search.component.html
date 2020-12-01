@@ -452,6 +452,16 @@
                                 <button type="submit" *ngIf="isLogin" class="btn btn-primary" autofocus="" style="margin: 0 10px;" (click)="getMyCatalog()">My Catalog</button>
                                 <button type="submit" *ngIf="isLogin" class="btn btn-info" autofocus="" style="margin: 0 10px;" data-toggle="modal" data-target="#addCLmodal">Add Catalog</button>
                             </div>
+                            <div class="col-lg-6">
+                                <label for="getuserList">Users：</label>
+                                <select style="margin: 0 10px;" name="Seluser" id="getuserList" [(ngModel)]="Seluser">
+                                
+                                        <option *ngFor="let item of userList"  value={{item.email}} >{{item.email}}</option>
+                                   
+                                    
+                                </select>
+                                <button type="submit" *ngIf="isAdmin==1" class="btn btn-info" autofocus="" style="margin: 0 10px;" (click)="addAdmin()"> To Grant Authorization</button>
+                            </div>
                             <br><br>
                         </div>
                     </div>

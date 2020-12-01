@@ -13,7 +13,12 @@ export class HeadComponent implements OnInit {
   isLogin = false;
   userName="";
   constructor(private http:HttpClient,private jwt:JwtHelperService) {
-    this.userName = this.jwt.decodeToken(window.localStorage.getItem("token")).name?this.jwt.decodeToken(window.localStorage.getItem("token")).name:"Visitor";
+    if(window.localStorage.getItem("token")){
+      this.userName = this.jwt.decodeToken(window.localStorage.getItem("token")).name
+    }else{
+      this.userName = "Visitor";
+    }
+   
     if (window.localStorage.getItem("isLogin") == "true") {
       this.isLogin = true;
     } else {

@@ -15,8 +15,8 @@ export class SearchComponent implements OnInit {
     headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' })
   };
   keyword = "";
-   //add catalog
-   addCLdata:any={}
+  //add catalog
+  addCLdata: any = {}
 
   //find by
   designation = "";
@@ -31,7 +31,10 @@ export class SearchComponent implements OnInit {
   e_time = "";
   component = "";
   locationCode = "";
- 
+
+  isAdmin = 0;
+  userList=[];
+  Seluser="";
 
   //data in html
   list = [];
@@ -44,17 +47,17 @@ export class SearchComponent implements OnInit {
   addCdata: any = {}
   inputdays = [];
 
-  revise_key=-1;
+  revise_key = -1;
 
   init() {
-    this.addCLdata={
-      catalog_nbr:"",
-      className:"",
-      catalog_description:"",
-      subject:"ACTURSCI",
-      createUser:this.jwt.decodeToken(window.localStorage.getItem("token")).user_id,
-      createUserName:this.jwt.decodeToken(window.localStorage.getItem("token")).name,
-      power:"1"
+    this.addCLdata = {
+      catalog_nbr: "",
+      className: "",
+      catalog_description: "",
+      subject: "ACTURSCI",
+      createUser: this.jwt.decodeToken(window.localStorage.getItem("token")).user_id,
+      createUserName: this.jwt.decodeToken(window.localStorage.getItem("token")).name,
+      power: "1"
     }
     //addClass
     this.c_id = "";
@@ -81,9 +84,16 @@ export class SearchComponent implements OnInit {
 
 
 
-  
 
-  constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth,private jwt:JwtHelperService) {
+
+  constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth, private jwt: JwtHelperService) {
+    this.http.post("http://127.0.0.1:3000/visitor/login", { "id": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
+      this.isAdmin = res.data.type;
+      this.userList=res.data.userList;
+      if(this.userList.length>0){
+        this.Seluser=this.userList[0].email;
+      }
+    })
     this.init();
     this.getAll();
     if (window.localStorage.getItem("isLogin") == "true") {
@@ -100,7 +110,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   
+
   }
   submit() {
     var dayS = [];
@@ -146,7 +156,7 @@ export class SearchComponent implements OnInit {
       this.addCdata.facility_ID == "") {
       alert("The first three items cannot be empty.")
     } else {
-      if (this.addCdata.class_nbr.length < 4 || this.addCdata.class_nbr.length>5) {
+      if (this.addCdata.class_nbr.length < 4 || this.addCdata.class_nbr.length > 5) {
         alert("The Class Nbr cannot less than 4 chars and more than 5 chars.")
       } else {
         var dayS = [];
@@ -162,7 +172,7 @@ export class SearchComponent implements OnInit {
             window.location.reload();
           })
         } else {
-          this.http.post("http://127.0.0.1:3000/user/reviseClass", { "id": this.c_id, "data": this.addCdata,"key":this.revise_key }, this.httpOptions).subscribe((res: any) => {
+          this.http.post("http://127.0.0.1:3000/user/reviseClass", { "id": this.c_id, "data": this.addCdata, "key": this.revise_key }, this.httpOptions).subscribe((res: any) => {
             alert(res.text);
             window.location.reload();
           })
@@ -182,26 +192,26 @@ export class SearchComponent implements OnInit {
     }
 
   }
-  addCatalog(){
+  addCatalog() {
     if (this.addCLdata.catalog_nbr == "" ||
       this.addCLdata.className == "" ||
       this.addCLdata.catalog_description == "") {
       alert("The first three items cannot be empty.")
     } else {
-      if (this.addCLdata.catalog_nbr.length < 4 || this.addCLdata.catalog_nbr.length>5) {
+      if (this.addCLdata.catalog_nbr.length < 4 || this.addCLdata.catalog_nbr.length > 5) {
         alert("The Class Nbr cannot less than 4 chars and more than 5 chars.")
       } else {
         if (this.revise_key == -1) {
-        this.http.post("http://127.0.0.1:3000/user/addCatalog",this.addCLdata , this.httpOptions).subscribe((res: any) => {
-          alert(res.text);
-          window.location.reload();
-        })
-      }else{
-        this.http.post("http://127.0.0.1:3000/user/reviseCatalog",this.addCLdata , this.httpOptions).subscribe((res: any) => {
-          alert(res.text);
-          window.location.reload();
-        })
-      }
+          this.http.post("http://127.0.0.1:3000/user/addCatalog", this.addCLdata, this.httpOptions).subscribe((res: any) => {
+            alert(res.text);
+            window.location.reload();
+          })
+        } else {
+          this.http.post("http://127.0.0.1:3000/user/reviseCatalog", this.addCLdata, this.httpOptions).subscribe((res: any) => {
+            alert(res.text);
+            window.location.reload();
+          })
+        }
       }
     }
   }
@@ -236,9 +246,9 @@ export class SearchComponent implements OnInit {
   }
 
   nowRClassID(id, key, val) {
-    this.revise_key=key;
+    this.revise_key = key;
     this.c_id = id;
-    this.addCdata = {...val};
+    this.addCdata = { ...val };
     for (var i = 0; i < this.inputdays.length; i++) {
       if (this.isInArr(this.inputdays[i].value, val.days)) {
         this.inputdays[i].isChecked = true;
@@ -254,23 +264,31 @@ export class SearchComponent implements OnInit {
       }
     }
     return false;
-    
+
   }
-  closeModal(){
-    this.init(); 
-    this.revise_key=-1;    
+  closeModal() {
+    this.init();
+    this.revise_key = -1;
   }
-  nowRClass(val){
-    this.addCLdata={...val};
-    this.revise_key=0;
+  nowRClass(val) {
+    this.addCLdata = { ...val };
+    this.revise_key = 0;
   }
-  isPrivate(val){
-    if(this.jwt.decodeToken(window.localStorage.getItem("token")).user_id==val.createUser){
+  isPrivate(val) {
+    if (this.jwt.decodeToken(window.localStorage.getItem("token")).user_id == val.createUser) {
       return true;
-    }else if(val.power=="0"){
+    } else if (val.power == "0") {
       return false;
     }
     return true;
-    
+
   }
+  addAdmin(){
+if(confirm("Are you sure you want to do this?\nOperation cannot be recalled.")){
+    this.http.post("http://127.0.0.1:3000/admin/addAdmin", {email:this.Seluser}, this.httpOptions).subscribe((res: any) => {
+            alert(res.text);
+            window.location.reload();
+    })
+  }
+}
 }

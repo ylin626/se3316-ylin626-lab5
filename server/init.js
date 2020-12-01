@@ -16261,10 +16261,16 @@ MongoClient.connect("mongodb://localhost:27017/", {
 
 function initDB(client) {
     db = client.db('timeTable');
-    //time
+    //schedule
     db.createCollection('schedule', function(err, res) {
         if (err) throw err;
-        console.log("Create time Collection!");
+        console.log("Create schedule Collection!");
+
+    });
+    //user
+    db.createCollection('user', function(err, res) {
+        if (err) throw err;
+        console.log("Create user Collection!");
 
     });
     timeTable.forEach(element => {
@@ -16282,6 +16288,11 @@ function initDB(client) {
         db.close();
     });
     // db.collection("schedule").deleteMany({}, function(err, result) {
+    //     if (err) throw err;
+    //     process.exit();
+    //     db.close();
+    // });
+    // db.collection("user").deleteMany({}, function(err, result) {
     //     if (err) throw err;
     //     process.exit();
     //     db.close();
