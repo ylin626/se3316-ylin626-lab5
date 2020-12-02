@@ -450,15 +450,16 @@
                                 <button type="submit" class="btn btn-success" autofocus="" style="margin: 0 10px;" (click)="search()">Submit</button>
                                 <button type="submit" *ngIf="isLogin" class="btn btn-info" autofocus="" style="margin: 0 10px;" (click)="getAll()">Public Catalog</button>
                                 <button type="submit" *ngIf="isLogin" class="btn btn-primary" autofocus="" style="margin: 0 10px;" (click)="getMyCatalog()">My Catalog</button>
-                                <button type="submit" *ngIf="isLogin" class="btn btn-info" autofocus="" style="margin: 0 10px;" data-toggle="modal" data-target="#addCLmodal">Add Catalog</button>
+                                <button type="submit" *ngIf="isLogin" class="btn btn-info" autofocus="" style="margin: 0 10px;" data-toggle="modal" data-target="#addCLmodal">Add
+                                    Catalog</button>
                             </div>
                             <div class="col-lg-6">
                                 <label for="getuserList">Users：</label>
                                 <select style="margin: 0 10px;" name="Seluser" id="getuserList" [(ngModel)]="Seluser">
-                                
-                                        <option *ngFor="let item of userList"  value={{item.email}} >{{item.email}}</option>
-                                   
-                                    
+
+                                    <option *ngFor="let item of userList" value={{item.email}}>{{item.email}}</option>
+
+
                                 </select>
                                 <button type="submit" *ngIf="isAdmin==1" class="btn btn-info" autofocus="" style="margin: 0 10px;" (click)="addAdmin()"> To Grant Authorization</button>
                             </div>
@@ -474,15 +475,22 @@
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <span *ngFor="let item of list">
+                        <span *ngFor="let item of list;let i = index;">
                             <div class="card" *ngIf="isPrivate(item)">
                                 <div class="card-header">
-                                    <h4 class="card-title">{{item.subject}} {{item.catalog_nbr}} - {{item.className}}</h4><i><b>Last edit time:</b>{{item.reviseTime}} &nbsp; <b>Creator:</b>{{item.createUserName}} &nbsp;<b>Number of courses:</b>{{item.course_info.length}}</i>
+                                    <h4 class="card-title">{{item.subject}} {{item.catalog_nbr}} - {{item.className}}
+                                    </h4><i><b>Last edit time:</b>{{item.reviseTime}} &nbsp;
+                                        <b>Creator:</b>{{item.createUserName}} &nbsp;<b>Number of
+                                            courses:</b>{{item.course_info.length}}</i>
                                     <div class="tt-div" *ngIf="isCreateUser(item.createUser)">
-                                        
-                                        <button class="btn btn-info tt-btn" (click)="nowClassID(item._id)" data-target="#addCLmodal" data-toggle="modal" (click)="nowRClass(item)" >Revise</button>
-                                        <button class="btn btn-success tt-btn" data-toggle="modal" data-target="#addCmodal" (click)="nowClassID(item._id)">Add Class</button>
-                                        <button class="btn btn-danger tt-btn" (click)="delCatalog(item._id)">Delete</button>
+
+                                        <button class="btn btn-info tt-btn" (click)="nowClassID(item._id)"
+                                            data-target="#addCLmodal" data-toggle="modal"
+                                            (click)="nowRClass(item)">Revise</button>
+                                        <button class="btn btn-success tt-btn" data-toggle="modal"
+                                            data-target="#addCmodal" (click)="nowClassID(item._id)">Add Class</button>
+                                        <button class="btn btn-danger tt-btn"
+                                            (click)="delCatalog(item._id)">Delete</button>
                                     </div>
                                     <p class="font-md"><b>Course Description:</b> {{item.catalog_description}}</p>
                                 </div>
@@ -514,11 +522,16 @@
                                                         <table class="daysTable">
                                                             <tbody>
                                                                 <tr>
-                                                                    <td width="10%" >&nbsp;{{isDayHave('M',val.days)?"M":""}}</td>
-                                                                    <td width="10%" >&nbsp;{{isDayHave('Tu',val.days)?"Tu":""}}</td>
-                                                                    <td width="10%" >&nbsp;{{isDayHave('W',val.days)?"W":""}}</td>
-                                                                    <td width="10%">&nbsp;{{isDayHave('Th',val.days)?"Th":""}}</td>
-                                                                    <td width="10%" >&nbsp;{{isDayHave('F',val.days)?"F":""}}</td>
+                                                                    <td width="10%">
+                                                                        &nbsp;{{isDayHave('M',val.days)?"M":""}}</td>
+                                                                    <td width="10%">
+                                                                        &nbsp;{{isDayHave('Tu',val.days)?"Tu":""}}</td>
+                                                                    <td width="10%">
+                                                                        &nbsp;{{isDayHave('W',val.days)?"W":""}}</td>
+                                                                    <td width="10%">
+                                                                        &nbsp;{{isDayHave('Th',val.days)?"Th":""}}</td>
+                                                                    <td width="10%">
+                                                                        &nbsp;{{isDayHave('F',val.days)?"F":""}}</td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -531,7 +544,8 @@
                                                     </td>
                                                     <td>
                                                         <p style="margin: 0;">{{val.descr}}</p>
-                                                        <b *ngIf="val.descrlong.length!=0">REQUISITES:</b>{{val.descrlong}}
+                                                        <b
+                                                            *ngIf="val.descrlong.length!=0">REQUISITES:</b>{{val.descrlong}}
                                                     </td>
                                                     <td>
                                                         {{val.enrl_stat}}
@@ -542,26 +556,61 @@
                                                     <td>
                                                         Distance Studies/Online
                                                     </td>
-                                                    <td  *ngIf="isCreateUser(item.createUser)">
-                                                        <button class="btn btn-warning tt-btn-td" (click)="delClass(item._id,key)"
-                                                            >Delete</button>
-                                                        <button class="btn btn-info tt-btn-td" data-toggle="modal" data-target="#addCmodal" (click)="nowRClassID(item._id,key,val)"
-                                                            >Revise</button>
+                                                    <td *ngIf="isCreateUser(item.createUser)">
+                                                        <button class="btn btn-warning tt-btn-td"
+                                                            (click)="delClass(item._id,key)">Delete</button>
+                                                        <button class="btn btn-info tt-btn-td" data-toggle="modal"
+                                                            data-target="#addCmodal"
+                                                            (click)="nowRClassID(item._id,key,val)">Revise</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+                                <div class="card-footer" *ngIf="isLogin">
+                                    <div class="row"  style="margin-left: 10px;padding-top: 15px;">
+                                        <label>
+                                            <h4>Review：</h4>
+                                        </label><input
+                                            style="margin: 0px 10px;width: 30%;font-size: small;height: 30px;"
+                                            type="text" name="review" [(ngModel)]="review"><button
+                                            class="btn btn-info tt-btn" (click)="sendReview(item._id)"
+                                            style="height: 30px;padding:0 10px;">Send</button>
+                                    </div>
+
+                                </div>
+                                <div class="card-footer" *ngIf="isLogin">
+
+                                    <span *ngFor="let revw of item.review;let r_inx =index;">
+                                        <div class="row" style="margin-left: 10px; position: relative;" *ngIf="!(revw.display=='0'&&isAdmin==0)">
+                                            <i>{{revw.time}} from <b>{{revw.name}}</b>({{revw.email}}):</i><span
+                                                style="margin-left: 5px;">{{revw.text}}</span>
+                        <div id="r-dis" *ngIf="isAdmin==1">
+                            <label for="reviewDisplay">Display:</label>
+                            <div id="reviewDisplay" style="margin-left: 5px;">
+                                <input type="radio" id="reviewIsShow{{i+'-'+r_inx}}-1" name="reviewIsShow{{i+'-'+r_inx}}" [(ngModel)]="revw.display" value="1" (click)="updateDisplay(item._id,item.review,'1',r_inx)"><label for="reviewIsShow{{i+'-'+r_inx}}-1">Show</label>
+                                <input type="radio" id="reviewIsShow{{i+'-'+r_inx}}-0" name="reviewIsShow{{i+'-'+r_inx}}" [(ngModel)]="revw.display" value="0" (click)="updateDisplay(item._id,item.review,'0',r_inx)"><label for="reviewIsShow{{i+'-'+r_inx}}-0">Hide</label>
                             </div>
-                        </span>
+                        </div>
                     </div>
+                    </span>
+
+
                 </div>
+
+
             </div>
+            </span>
         </div>
 
     </div>
 </div>
+</div>
+</div>
+
+
+
 <div class="modal fade " id="addCmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -587,78 +636,78 @@
                     <div class="col-lg-7">
                         <label for="inputSsr_component" style="margin: 0 10px;">Component:</label>
                         <select name="ssr_component" id="inputSsr_component" [(ngModel)]="addCdata.ssr_component">
-                                    <option value="LEC">Lecture</option>
-                                    <option value="TUT">Tutorial</option>
-                                    <option value="LAB">Laboratory</option>
-                                </select>
+                                <option value="LEC">Lecture</option>
+                                <option value="TUT">Tutorial</option>
+                                <option value="LAB">Laboratory</option>
+                            </select>
                     </div>
 
                 </div>
                 <div class="row">
                     <label for="inputDays" style="margin: 0 10px;">Day of Class:</label>
                     <span *ngFor="let item of inputdays">
-                                    <div class="col"> {{item.name}}<br><input type="checkbox" id="inputDays" name="day"
-                                            [value]="item.value" [(ngModel)]="item.isChecked"> </div>
-                                </span>
+                            <div class="col"> {{item.name}}<br><input type="checkbox" id="inputDays" name="day"
+                                    [value]="item.value" [(ngModel)]="item.isChecked"> </div>
+                        </span>
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
                         <label for="inputStart_time" style="margin: 0 10px;">Starting Time:</label>
                         <select name="start_time" id="inputStart_time" [(ngModel)]="addCdata.start_time">
-                                    <option value="8:00 am" >8:00 am</option>
-                                    <option value="8:30 am">8:30 am</option>
-                                    <option value="9:00 am">9:00 am</option>
-                                    <option value="9:30 am">9:30 am</option>
-                                    <option value="10:00 am">10:00 am</option>
-                                    <option value="10:30 am">10:30 am</option>
-                                    <option value="11:00 am">11:00 am</option>
-                                    <option value="11:30 am">11:30 am</option>
-                                    <option value="12:00 pm">12:00 pm</option>
-                                    <option value="12:30 pm">12:30 pm</option>
-                                    <option value="1:00 pm">1:00 pm</option>
-                                    <option value="1:30 pm">1:30 pm</option>
-                                    <option value="2:00 pm">2:00 pm</option>
-                                    <option value="2:30 pm">2:30 pm</option>
-                                    <option value="3:00 pm">3:00 pm</option>
-                                    <option value="3:30 pm">3:30 pm</option>
-                                    <option value="4:00 pm">4:00 pm</option>
-                                    <option value="4:30 pm">4:30 pm</option>
-                                    <option value="5:00 pm">5:00 pm</option>
-                                    <option value="5:30 pm">5:30 pm</option>
-                                    <option value="6:00 pm">6:00 pm</option>
-                                    <option value="6:30 pm">6:30 pm</option>
-                                    <option value="7:00 pm">7:00 pm</option>
+                                <option value="8:00 am">8:00 am</option>
+                                <option value="8:30 am">8:30 am</option>
+                                <option value="9:00 am">9:00 am</option>
+                                <option value="9:30 am">9:30 am</option>
+                                <option value="10:00 am">10:00 am</option>
+                                <option value="10:30 am">10:30 am</option>
+                                <option value="11:00 am">11:00 am</option>
+                                <option value="11:30 am">11:30 am</option>
+                                <option value="12:00 pm">12:00 pm</option>
+                                <option value="12:30 pm">12:30 pm</option>
+                                <option value="1:00 pm">1:00 pm</option>
+                                <option value="1:30 pm">1:30 pm</option>
+                                <option value="2:00 pm">2:00 pm</option>
+                                <option value="2:30 pm">2:30 pm</option>
+                                <option value="3:00 pm">3:00 pm</option>
+                                <option value="3:30 pm">3:30 pm</option>
+                                <option value="4:00 pm">4:00 pm</option>
+                                <option value="4:30 pm">4:30 pm</option>
+                                <option value="5:00 pm">5:00 pm</option>
+                                <option value="5:30 pm">5:30 pm</option>
+                                <option value="6:00 pm">6:00 pm</option>
+                                <option value="6:30 pm">6:30 pm</option>
+                                <option value="7:00 pm">7:00 pm</option>
 
-                                </select>
+                            </select>
                     </div>
                     <div class="col-lg-6">
                         <label for="inputEnd_time" style="margin: 0 10px;">Ending Time:</label>
                         <select name="end_time" id="inputEnd_time" [(ngModel)]="addCdata.end_time">
-                                                    <option value="8:00 am" >8:00 am</option>
-                                                    <option value="8:30 am">8:30 am</option>
-                                                    <option value="9:00 am">9:00 am</option>
-                                                    <option value="9:30 am">9:30 am</option>
-                                                    <option value="10:00 am">10:00 am</option>
-                                                    <option value="10:30 am">10:30 am</option>
-                                                    <option value="11:00 am">11:00 am</option>
-                                                    <option value="11:30 am">11:30 am</option>
-                                                    <option value="12:00 pm">12:00 pm</option>
-                                                    <option value="12:30 pm">12:30 pm</option>
-                                                    <option value="1:00 pm">1:00 pm</option>
-                                                    <option value="1:30 pm">1:30 pm</option>
-                                                    <option value="2:00 pm">2:00 pm</option>
-                                                    <option value="2:30 pm">2:30 pm</option>
-                                                    <option value="3:00 pm">3:00 pm</option>
-                                                    <option value="3:30 pm">3:30 pm</option>
-                                                    <option value="4:00 pm">4:00 pm</option>
-                                                    <option value="4:30 pm">4:30 pm</option>
-                                                    <option value="5:00 pm">5:00 pm</option>
-                                                    <option value="5:30 pm">5:30 pm</option>
-                                                    <option value="6:00 pm">6:00 pm</option>
-                                                    <option value="6:30 pm">6:30 pm</option>
-                                                    <option value="7:00 pm">7:00 pm</option>
-                
-                                                </select>
+                                <option value="8:00 am">8:00 am</option>
+                                <option value="8:30 am">8:30 am</option>
+                                <option value="9:00 am">9:00 am</option>
+                                <option value="9:30 am">9:30 am</option>
+                                <option value="10:00 am">10:00 am</option>
+                                <option value="10:30 am">10:30 am</option>
+                                <option value="11:00 am">11:00 am</option>
+                                <option value="11:30 am">11:30 am</option>
+                                <option value="12:00 pm">12:00 pm</option>
+                                <option value="12:30 pm">12:30 pm</option>
+                                <option value="1:00 pm">1:00 pm</option>
+                                <option value="1:30 pm">1:30 pm</option>
+                                <option value="2:00 pm">2:00 pm</option>
+                                <option value="2:30 pm">2:30 pm</option>
+                                <option value="3:00 pm">3:00 pm</option>
+                                <option value="3:30 pm">3:30 pm</option>
+                                <option value="4:00 pm">4:00 pm</option>
+                                <option value="4:30 pm">4:30 pm</option>
+                                <option value="5:00 pm">5:00 pm</option>
+                                <option value="5:30 pm">5:30 pm</option>
+                                <option value="6:00 pm">6:00 pm</option>
+                                <option value="6:30 pm">6:30 pm</option>
+                                <option value="7:00 pm">7:00 pm</option>
+
+                            </select>
                     </div>
                 </div>
                 <div class="row">
@@ -674,9 +723,9 @@
                     <div class="col-lg-6">
                         <label for="inputEnrl_stat" style="margin: 0 10px;">Status:</label>
                         <select name="enrl_stat" id="inputEnrl_stat" [(ngModel)]="addCdata.enrl_stat">
-                                                <option value="Full" >Full</option>
-                                                <option value="Not Full">Not Full</option>
-                                                </select>
+                                <option value="Full">Full</option>
+                                <option value="Not Full">Not Full</option>
+                            </select>
                     </div>
                 </div>
                 <div class="row">
@@ -728,289 +777,289 @@
 
                     <label for="inputCLSubject" style="margin: 0 10px;">Subject:</label>
                     <select name="subject" id="inputCLSubject" [(ngModel)]="addCLdata.subject">
-                                        <option value="ACTURSCI"> Actuarial Science
-                                        </option>
-                                        <option value="AMERICAN"> American Studies
-                                        </option>
-                                        <option value="ANATCELL"> Anatomy and Cell Biology
-                                        </option>
-                                        <option value="ANTHRO"> Anthropology
-                                        </option>
-                                        <option value="APPLMATH"> Applied Mathematics
-                                        </option>
-                                        <option value="ARABIC"> Arabic
-                                        </option>
-                                        <option value="AH"> Art History
-                                        </option>
-                                        <option value="ARTHUM"> Arts and Humanities
-                                        </option>
-                                        <option value="ASTRONOM"> Astronomy
-                                        </option>
-                                        <option value="BIBLSTUD"> Biblical Studies
-                                        </option>
-                                        <option value="BIOCHEM"> Biochemistry
-                                        </option>
-                                        <option value="BIOLOGY"> Biology
-                                        </option>
-                                        <option value="BME"> Biomedical Engineering
-                                        </option>
-                                        <option value="BIOSTATS"> Biostatistics
-                                        </option>
-                                        <option value="BUSINESS"> Business Administration
-                                        </option>
-                                        <option value="CALCULUS"> Calculus
-                                        </option>
-                                        <option value="CGS"> Centre for Global Studies
-                                        </option>
-                                        <option value="CBE"> Chem &amp; Biochem Engineering
-                                        </option>
-                                        <option value="CHEMBIO"> Chemical Biology
-                                        </option>
-                                        <option value="CHEM"> Chemistry
-                                        </option>
-                                        <option value="CSI" selected=""> Childhood &amp; Social Institutns
-                                        </option>
-                                        <option value="CHINESE"> Chinese
-                                        </option>
-                                        <option value="CHURCH"> Church History
-                                        </option>
-                                        <option value="CHURLAW"> Church Law
-                                        </option>
-                                        <option value="CHURMUSI"> Church Music
-                                        </option>
-                                        <option value="CEE"> Civil &amp; Envrnmntl Engineering
-                                        </option>
-                                        <option value="CLASSICS"> Classical Studies
-                                        </option>
-                                        <option value="CMBPROG"> Combined Program Enrollment
-                                        </option>
-                                        <option value="COMMSCI"> Communication Sci &amp; Disorders
-                                        </option>
-                                        <option value="COMPLIT"> Comparative Lit &amp; Culture
-                                        </option>
-                                        <option value="COMPSCI"> Computer Science
-                                        </option>
-                                        <option value="CA"> Creative Arts
-                                        </option>
-                                        <option value="DANCE"> Dance
-                                        </option>
-                                        <option value="DIGICOMM"> Digital Communication
-                                        </option>
-                                        <option value="DIGIHUM"> Digital Humanities
-                                        </option>
-                                        <option value="DISABST"> Disability Studies
-                                        </option>
-                                        <option value="EARTHSCI"> Earth Sciences
-                                        </option>
-                                        <option value="ECONOMIC"> Economics
-                                        </option>
-                                        <option value="EELC"> Education English Language Cen
-                                        </option>
-                                        <option value="ECE"> Elect &amp; Computer Engineering
-                                        </option>
-                                        <option value="ENGSCI"> Engineering Science
-                                        </option>
-                                        <option value="ENGLISH"> English
-                                        </option>
-                                        <option value="ENVIRSCI"> Environmental Science
-                                        </option>
-                                        <option value="EPID"> Epidemiology
-                                        </option>
-                                        <option value="EPIDEMIO"> Epidemiology &amp; Biostatistics
-                                        </option>
-                                        <option value="FIMS"> FIMS
-                                        </option>
-                                        <option value="FAMLYSTU"> Family Studies &amp; Human Develop
-                                        </option>
-                                        <option value="FLDEDUC"> Field Education
-                                        </option>
-                                        <option value="FILM"> Film Studies
-                                        </option>
-                                        <option value="FINMOD"> Financial Modelling
-                                        </option>
-                                        <option value="FOODNUTR"> Foods and Nutrition
-                                        </option>
-                                        <option value="FRENCH"> French
-                                        </option>
-                                        <option value="GEOGRAPH"> Geography
-                                        </option>
-                                        <option value="GEOLOGY"> Geology
-                                        </option>
-                                        <option value="GERMAN"> German
-                                        </option>
-                                        <option value="GGB"> Global Great Books
-                                        </option>
-                                        <option value="GLE"> Governance,Leadership &amp; Ethics
-                                        </option>
-                                        <option value="GREEK"> Greek
-                                        </option>
-                                        <option value="GPE"> Green Process Engineering
-                                        </option>
-                                        <option value="HEALTSCI"> Health Sciences
-                                        </option>
-                                        <option value="HEBREW"> Hebrew
-                                        </option>
-                                        <option value="HISTTHEO"> Historical Theology
-                                        </option>
-                                        <option value="HISTORY"> History
-                                        </option>
-                                        <option value="HISTSCI"> History of Science
-                                        </option>
-                                        <option value="HOMILET"> Homiletics
-                                        </option>
-                                        <option value="HUMANECO"> Human Ecology
-                                        </option>
-                                        <option value="HUMANRS"> Human Rights Studies
-                                        </option>
-                                        <option value="INDIGSTU"> Indigenous Studies
-                                        </option>
-                                        <option value="INTEGSCI"> Integrated Science
-                                        </option>
-                                        <option value="ICC"> Intercultural Communications
-                                        </option>
-                                        <option value="INTERDIS"> Interdisciplinary Studies
-                                        </option>
-                                        <option value="INTREL"> International Relations
-                                        </option>
-                                        <option value="ITALIAN"> Italian
-                                        </option>
-                                        <option value="JAPANESE"> Japanese
-                                        </option>
-                                        <option value="JEWISH"> Jewish Studies
-                                        </option>
-                                        <option value="MTP-BRJR"> Journalism-Broadcasting Fanshw
-                                        </option>
-                                        <option value="KINESIOL"> Kinesiology
-                                        </option>
-                                        <option value="LATIN"> Latin
-                                        </option>
-                                        <option value="LAW"> Law
-                                        </option>
-                                        <option value="LS"> Leadership Studies
-                                        </option>
-                                        <option value="LINGUIST"> Linguistics
-                                        </option>
-                                        <option value="LITURST"> Liturgical Studies
-                                        </option>
-                                        <option value="LITURGIC"> Liturgics
-                                        </option>
-                                        <option value="MOS"> Management &amp; Organizational St
-                                        </option>
-                                        <option value="MTP-MKTG"> Marketing - Fanshawe
-                                        </option>
-                                        <option value="MATH"> Mathematics
-                                        </option>
-                                        <option value="MME"> Mech &amp; Materials Engineering
-                                        </option>
-                                        <option value="MSE"> Mechatronic Systems Engineerin
-                                        </option>
-                                        <option value="MIT"> Media, Information &amp;Technocult
-                                        </option>
-                                        <option value="MEDBIO"> Medical Biophysics
-                                        </option>
-                                        <option value="MEDHINFO"> Medical Health Informatics
-                                        </option>
-                                        <option value="MEDSCIEN"> Medical Sciences
-                                        </option>
-                                        <option value="MEDIEVAL"> Medieval Studies
-                                        </option>
-                                        <option value="MICROIMM"> Microbiology &amp; Immunology
-                                        </option>
-                                        <option value="MORALTHE"> Moral Theology
-                                        </option>
-                                        <option value="MTP-MMED"> Multimed Dsgn &amp; Prod Fanshawe
-                                        </option>
-                                        <option value="MCS"> Museum and Curatorial Studies
-                                        </option>
-                                        <option value="MUSIC"> Music
-                                        </option>
-                                        <option value="NEURO"> Neuroscience
-                                        </option>
-                                        <option value="NURSING"> Nursing
-                                        </option>
-                                        <option value="ONEHEALT"> One Health
-                                        </option>
-                                        <option value="PASTTHEO"> Pastoral Theology
-                                        </option>
-                                        <option value="PATHOL"> Pathology
-                                        </option>
-                                        <option value="PERSIAN"> Persian
-                                        </option>
-                                        <option value="PHARM"> Pharmacology
-                                        </option>
-                                        <option value="PHILST"> Philosophical Studies
-                                        </option>
-                                        <option value="PHILOSOP"> Philosophy
-                                        </option>
-                                        <option value="PHYSICS"> Physics
-                                        </option>
-                                        <option value="PHYSIOL"> Physiology
-                                        </option>
-                                        <option value="PHYSPHRM"> Physiology and Pharmacology
-                                        </option>
-                                        <option value="POLISCI"> Political Science
-                                        </option>
-                                        <option value="PPE"> Politics, Philosophy, Economic
-                                        </option>
-                                        <option value="PSYCHOL"> Psychology
-                                        </option>
-                                        <option value="REHABSCI"> Rehabilitation Sciences
-                                        </option>
-                                        <option value="RELEDUC"> Religious Education
-                                        </option>
-                                        <option value="RELSTUD"> Religious Studies
-                                        </option>
-                                        <option value="SACRTHEO"> Sacramental Theology
-                                        </option>
-                                        <option value="SCHOLARS"> Scholars Electives
-                                        </option>
-                                        <option value="SCIENCE"> Science
-                                        </option>
-                                        <option value="SOCLJUST"> Social Justice &amp; Peace Studies
-                                        </option>
-                                        <option value="SOCSCI"> Social Science
-                                        </option>
-                                        <option value="SOCWORK"> Social Work
-                                        </option>
-                                        <option value="SOCIOLOG"> Sociology
-                                        </option>
-                                        <option value="SE"> Software Engineering
-                                        </option>
-                                        <option value="SPANISH"> Spanish
-                                        </option>
-                                        <option value="SPEECH"> Speech
-                                        </option>
-                                        <option value="SPIRTHEO"> Spiritual Theology
-                                        </option>
-                                        <option value="STATS"> Statistical Sciences
-                                        </option>
-                                        <option value="SA"> Studio Art
-                                        </option>
-                                        <option value="SYSTHEO"> Systematic Theology
-                                        </option>
-                                        <option value="THANAT"> Thanatology
-                                        </option>
-                                        <option value="THEATRE"> Theatre Studies
-                                        </option>
-                                        <option value="THEOETH"> Theological Ethics
-                                        </option>
-                                        <option value="THEOLST"> Theological Studies
-                                        </option>
-                                        <option value="THESIS"> Thesis
-                                        </option>
-                                        <option value="TJ"> Transitional Justice
-                                        </option>
-                                        <option value="VISARTS"> Visual Arts
-                                        </option>
-                                        <option value="WTC"> Western Thought &amp; Civilization
-                                        </option>
-                                        <option value="WOMENST"> Women's Studies
-                                        </option>
-                                        <option value="WORLDLIT"> World Literatures and Cultures
-                                        </option>
-                                        <option value="WRITING"> Writing
-                                        </option>
-                                    </select>
+                            <option value="ACTURSCI"> Actuarial Science
+                            </option>
+                            <option value="AMERICAN"> American Studies
+                            </option>
+                            <option value="ANATCELL"> Anatomy and Cell Biology
+                            </option>
+                            <option value="ANTHRO"> Anthropology
+                            </option>
+                            <option value="APPLMATH"> Applied Mathematics
+                            </option>
+                            <option value="ARABIC"> Arabic
+                            </option>
+                            <option value="AH"> Art History
+                            </option>
+                            <option value="ARTHUM"> Arts and Humanities
+                            </option>
+                            <option value="ASTRONOM"> Astronomy
+                            </option>
+                            <option value="BIBLSTUD"> Biblical Studies
+                            </option>
+                            <option value="BIOCHEM"> Biochemistry
+                            </option>
+                            <option value="BIOLOGY"> Biology
+                            </option>
+                            <option value="BME"> Biomedical Engineering
+                            </option>
+                            <option value="BIOSTATS"> Biostatistics
+                            </option>
+                            <option value="BUSINESS"> Business Administration
+                            </option>
+                            <option value="CALCULUS"> Calculus
+                            </option>
+                            <option value="CGS"> Centre for Global Studies
+                            </option>
+                            <option value="CBE"> Chem &amp; Biochem Engineering
+                            </option>
+                            <option value="CHEMBIO"> Chemical Biology
+                            </option>
+                            <option value="CHEM"> Chemistry
+                            </option>
+                            <option value="CSI" selected=""> Childhood &amp; Social Institutns
+                            </option>
+                            <option value="CHINESE"> Chinese
+                            </option>
+                            <option value="CHURCH"> Church History
+                            </option>
+                            <option value="CHURLAW"> Church Law
+                            </option>
+                            <option value="CHURMUSI"> Church Music
+                            </option>
+                            <option value="CEE"> Civil &amp; Envrnmntl Engineering
+                            </option>
+                            <option value="CLASSICS"> Classical Studies
+                            </option>
+                            <option value="CMBPROG"> Combined Program Enrollment
+                            </option>
+                            <option value="COMMSCI"> Communication Sci &amp; Disorders
+                            </option>
+                            <option value="COMPLIT"> Comparative Lit &amp; Culture
+                            </option>
+                            <option value="COMPSCI"> Computer Science
+                            </option>
+                            <option value="CA"> Creative Arts
+                            </option>
+                            <option value="DANCE"> Dance
+                            </option>
+                            <option value="DIGICOMM"> Digital Communication
+                            </option>
+                            <option value="DIGIHUM"> Digital Humanities
+                            </option>
+                            <option value="DISABST"> Disability Studies
+                            </option>
+                            <option value="EARTHSCI"> Earth Sciences
+                            </option>
+                            <option value="ECONOMIC"> Economics
+                            </option>
+                            <option value="EELC"> Education English Language Cen
+                            </option>
+                            <option value="ECE"> Elect &amp; Computer Engineering
+                            </option>
+                            <option value="ENGSCI"> Engineering Science
+                            </option>
+                            <option value="ENGLISH"> English
+                            </option>
+                            <option value="ENVIRSCI"> Environmental Science
+                            </option>
+                            <option value="EPID"> Epidemiology
+                            </option>
+                            <option value="EPIDEMIO"> Epidemiology &amp; Biostatistics
+                            </option>
+                            <option value="FIMS"> FIMS
+                            </option>
+                            <option value="FAMLYSTU"> Family Studies &amp; Human Develop
+                            </option>
+                            <option value="FLDEDUC"> Field Education
+                            </option>
+                            <option value="FILM"> Film Studies
+                            </option>
+                            <option value="FINMOD"> Financial Modelling
+                            </option>
+                            <option value="FOODNUTR"> Foods and Nutrition
+                            </option>
+                            <option value="FRENCH"> French
+                            </option>
+                            <option value="GEOGRAPH"> Geography
+                            </option>
+                            <option value="GEOLOGY"> Geology
+                            </option>
+                            <option value="GERMAN"> German
+                            </option>
+                            <option value="GGB"> Global Great Books
+                            </option>
+                            <option value="GLE"> Governance,Leadership &amp; Ethics
+                            </option>
+                            <option value="GREEK"> Greek
+                            </option>
+                            <option value="GPE"> Green Process Engineering
+                            </option>
+                            <option value="HEALTSCI"> Health Sciences
+                            </option>
+                            <option value="HEBREW"> Hebrew
+                            </option>
+                            <option value="HISTTHEO"> Historical Theology
+                            </option>
+                            <option value="HISTORY"> History
+                            </option>
+                            <option value="HISTSCI"> History of Science
+                            </option>
+                            <option value="HOMILET"> Homiletics
+                            </option>
+                            <option value="HUMANECO"> Human Ecology
+                            </option>
+                            <option value="HUMANRS"> Human Rights Studies
+                            </option>
+                            <option value="INDIGSTU"> Indigenous Studies
+                            </option>
+                            <option value="INTEGSCI"> Integrated Science
+                            </option>
+                            <option value="ICC"> Intercultural Communications
+                            </option>
+                            <option value="INTERDIS"> Interdisciplinary Studies
+                            </option>
+                            <option value="INTREL"> International Relations
+                            </option>
+                            <option value="ITALIAN"> Italian
+                            </option>
+                            <option value="JAPANESE"> Japanese
+                            </option>
+                            <option value="JEWISH"> Jewish Studies
+                            </option>
+                            <option value="MTP-BRJR"> Journalism-Broadcasting Fanshw
+                            </option>
+                            <option value="KINESIOL"> Kinesiology
+                            </option>
+                            <option value="LATIN"> Latin
+                            </option>
+                            <option value="LAW"> Law
+                            </option>
+                            <option value="LS"> Leadership Studies
+                            </option>
+                            <option value="LINGUIST"> Linguistics
+                            </option>
+                            <option value="LITURST"> Liturgical Studies
+                            </option>
+                            <option value="LITURGIC"> Liturgics
+                            </option>
+                            <option value="MOS"> Management &amp; Organizational St
+                            </option>
+                            <option value="MTP-MKTG"> Marketing - Fanshawe
+                            </option>
+                            <option value="MATH"> Mathematics
+                            </option>
+                            <option value="MME"> Mech &amp; Materials Engineering
+                            </option>
+                            <option value="MSE"> Mechatronic Systems Engineerin
+                            </option>
+                            <option value="MIT"> Media, Information &amp;Technocult
+                            </option>
+                            <option value="MEDBIO"> Medical Biophysics
+                            </option>
+                            <option value="MEDHINFO"> Medical Health Informatics
+                            </option>
+                            <option value="MEDSCIEN"> Medical Sciences
+                            </option>
+                            <option value="MEDIEVAL"> Medieval Studies
+                            </option>
+                            <option value="MICROIMM"> Microbiology &amp; Immunology
+                            </option>
+                            <option value="MORALTHE"> Moral Theology
+                            </option>
+                            <option value="MTP-MMED"> Multimed Dsgn &amp; Prod Fanshawe
+                            </option>
+                            <option value="MCS"> Museum and Curatorial Studies
+                            </option>
+                            <option value="MUSIC"> Music
+                            </option>
+                            <option value="NEURO"> Neuroscience
+                            </option>
+                            <option value="NURSING"> Nursing
+                            </option>
+                            <option value="ONEHEALT"> One Health
+                            </option>
+                            <option value="PASTTHEO"> Pastoral Theology
+                            </option>
+                            <option value="PATHOL"> Pathology
+                            </option>
+                            <option value="PERSIAN"> Persian
+                            </option>
+                            <option value="PHARM"> Pharmacology
+                            </option>
+                            <option value="PHILST"> Philosophical Studies
+                            </option>
+                            <option value="PHILOSOP"> Philosophy
+                            </option>
+                            <option value="PHYSICS"> Physics
+                            </option>
+                            <option value="PHYSIOL"> Physiology
+                            </option>
+                            <option value="PHYSPHRM"> Physiology and Pharmacology
+                            </option>
+                            <option value="POLISCI"> Political Science
+                            </option>
+                            <option value="PPE"> Politics, Philosophy, Economic
+                            </option>
+                            <option value="PSYCHOL"> Psychology
+                            </option>
+                            <option value="REHABSCI"> Rehabilitation Sciences
+                            </option>
+                            <option value="RELEDUC"> Religious Education
+                            </option>
+                            <option value="RELSTUD"> Religious Studies
+                            </option>
+                            <option value="SACRTHEO"> Sacramental Theology
+                            </option>
+                            <option value="SCHOLARS"> Scholars Electives
+                            </option>
+                            <option value="SCIENCE"> Science
+                            </option>
+                            <option value="SOCLJUST"> Social Justice &amp; Peace Studies
+                            </option>
+                            <option value="SOCSCI"> Social Science
+                            </option>
+                            <option value="SOCWORK"> Social Work
+                            </option>
+                            <option value="SOCIOLOG"> Sociology
+                            </option>
+                            <option value="SE"> Software Engineering
+                            </option>
+                            <option value="SPANISH"> Spanish
+                            </option>
+                            <option value="SPEECH"> Speech
+                            </option>
+                            <option value="SPIRTHEO"> Spiritual Theology
+                            </option>
+                            <option value="STATS"> Statistical Sciences
+                            </option>
+                            <option value="SA"> Studio Art
+                            </option>
+                            <option value="SYSTHEO"> Systematic Theology
+                            </option>
+                            <option value="THANAT"> Thanatology
+                            </option>
+                            <option value="THEATRE"> Theatre Studies
+                            </option>
+                            <option value="THEOETH"> Theological Ethics
+                            </option>
+                            <option value="THEOLST"> Theological Studies
+                            </option>
+                            <option value="THESIS"> Thesis
+                            </option>
+                            <option value="TJ"> Transitional Justice
+                            </option>
+                            <option value="VISARTS"> Visual Arts
+                            </option>
+                            <option value="WTC"> Western Thought &amp; Civilization
+                            </option>
+                            <option value="WOMENST"> Women's Studies
+                            </option>
+                            <option value="WORLDLIT"> World Literatures and Cultures
+                            </option>
+                            <option value="WRITING"> Writing
+                            </option>
+                        </select>
 
 
                 </div>

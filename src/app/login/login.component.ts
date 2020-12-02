@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   };
 
   user: Observable<firebase.User>;
-  constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private router: ActivatedRoute,private jwt: JwtHelperService) {
+  constructor(private firebaseAuth: AngularFireAuth, private http: HttpClient, private router: ActivatedRoute, private jwt: JwtHelperService) {
     this.email = window.localStorage.getItem("userEmail");
     this.router.queryParams.subscribe((data) => {
       if (data.oobCode) {
@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
   login() {
+    this.email = this.filterHTMLTag(this.email);
     this.firebaseAuth
       .signInWithEmailAndPassword(this.email, this.password)
       .then((value: any) => {
@@ -67,4 +68,13 @@ export class LoginComponent implements OnInit {
         alert(err.message)
       })
   }
+
+  filterHTMLTag(msg) {
+    var msg = msg.replace(/<\/?[^>]*>/g, ''); //remove HTML 
+    msg = msg.replace(/^[\.\#]?\w+[^{]+\{[^}]*\}/g, '');//remove css
+    msg = msg.replace(/[|]*\n/, '') //remove " "
+    msg = msg.replace(/&npsp;/ig, ''); //remove npsp
+    return msg;
+  }
+
 }

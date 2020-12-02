@@ -35,6 +35,8 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
   }
   register() {
+    this.name = this.filterHTMLTag(this.name);
+    this.email = this.filterHTMLTag(this.email);
     if (this.name == "" || this.password == "" || this.email == "") {
       alert("Please perfect your registration information!");
     } else {
@@ -75,5 +77,12 @@ export class RegisterComponent implements OnInit {
     }
 
 
+  }
+  filterHTMLTag(msg) {
+    var msg = msg.replace(/<\/?[^>]*>/g, ''); //remove HTML 
+    msg = msg.replace(/^[\.\#]?\w+[^{]+\{[^}]*\}/g, '');//remove css
+    msg = msg.replace(/[|]*\n/, '') //remove " "
+    msg = msg.replace(/&npsp;/ig, ''); //remove npsp
+    return msg;
   }
 }

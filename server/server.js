@@ -236,7 +236,7 @@ app.post("/visitor/findbykeyword", function(req, res) {
  */
 app.post("/user/myCatalog", function(req, res) {
     var key = {
-        createUser: { $eq: jwt.decode(req.body.user).user_id }
+        createUser: { $eq: req.body.user }
     }
     MongoClient.connect(url, {
         useNewUrlParser: true
@@ -257,9 +257,71 @@ app.post("/user/myCatalog", function(req, res) {
 });
 
 
+/**
+ * send review
+ * @param user
+ * @param id
+ * @param text
+ */
+app.post("/user/sendView", function(req, res) {
+    var user = jwt.decode(req.body.user);
+    var key = {
+        time: dateFormat("YYYY-mm-dd HH:MM:SS", new Date()),
+        name: user.name,
+        email: user.email,
+        text: req.body.text,
+        display: "1"
+    }
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("schedule").find({ _id: ObjectID(req.body.id) }).toArray(function(err, result) {
+            if (err) throw err;
+            result[0].review.push(key);
+            dbo.collection("schedule").updateOne({ _id: ObjectID(req.body.id) }, { $set: { review: result[0].review } }, function(err, result) {
+                if (err) throw err;
+                db.close();
+                res.send({
+                    status: 200,
+                    text: "SendReview Successful！"
+                });
+            });
+        })
+
+    })
+});
+
+
 
 /**
- * Create a new schedule with a given schedule name. Return an error if name exists.
+ * update review display 0/1
+ * @param id
+ * @param data
+ */
+app.post("/user/changeViewDisplay", function(req, res) {
+    console.log(req.body.data)
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("schedule").updateOne({ _id: ObjectID(req.body.id) }, { $set: { review: req.body.data } }, function(err, result) {
+            if (err) throw err;
+            db.close();
+            res.send({
+                status: 200,
+                text: "UpdateReviewDisplay Successful！"
+            });
+        });
+
+    })
+});
+
+
+/**
+ * Create a new schedule 
  * @param catalogNbr
  * @param subject
  * @param className
@@ -316,7 +378,7 @@ app.post("/user/addCatalog", function(req, res) {
 })
 
 /**
- * Create a new schedule with a given schedule name. Return an error if name exists.
+ * revise schedule
  * @param id
  * @param catalog_nbr
  * @param subject
@@ -381,9 +443,7 @@ app.post("/user/reviseCatalog", function(req, res) {
 })
 
 /**
- * .Save a list of subject code, course code pairs under a given schedule name. 
- * Return an error if the schedule name does not exist. 
- * Replace existing subject-code + course-code pairs with new values and create new pairs if it doesn’t exist.
+ * add Class to Catalog
  * @param id
  * @param data
  */
@@ -431,9 +491,7 @@ app.post("/user/addClass", function(req, res) {
 
 
 /**
- * .Save a list of subject code, course code pairs under a given schedule name. 
- * Return an error if the schedule name does not exist. 
- * Replace existing subject-code + course-code pairs with new values and create new pairs if it doesn’t exist.
+ * revise Class from Catalog
  * @param id
  * @param data
  * @param key

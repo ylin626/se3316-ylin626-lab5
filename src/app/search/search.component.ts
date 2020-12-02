@@ -10,6 +10,8 @@ import { JwtHelperService } from "@auth0/angular-jwt";
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+  reviewIsShow = "1";
+  review = "";
   //http Header
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' })
@@ -33,8 +35,8 @@ export class SearchComponent implements OnInit {
   locationCode = "";
 
   isAdmin = 0;
-  userList=[];
-  Seluser="";
+  userList = [];
+  Seluser = "";
 
   //data in html
   list = [];
@@ -50,6 +52,7 @@ export class SearchComponent implements OnInit {
   revise_key = -1;
 
   init() {
+    this.review = "";
     this.addCLdata = {
       catalog_nbr: "",
       className: "",
@@ -59,6 +62,7 @@ export class SearchComponent implements OnInit {
       createUserName: this.jwt.decodeToken(window.localStorage.getItem("token")).name,
       power: "1"
     }
+    this.reviewIsShow = "1";
     //addClass
     this.c_id = "";
     this.addCdata = {
@@ -87,14 +91,18 @@ export class SearchComponent implements OnInit {
 
 
   constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth, private jwt: JwtHelperService) {
-    this.http.post("http://127.0.0.1:3000/visitor/login", { "id": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
-      this.isAdmin = res.data.type;
-      this.userList=res.data.userList;
-      if(this.userList.length>0){
-        this.Seluser=this.userList[0].email;
-      }
-    })
-    this.init();
+    if (!(window.localStorage.getItem("token") == "" || window.localStorage.getItem("token") == null || window.localStorage.getItem("token") == undefined)) {
+      this.http.post("http://127.0.0.1:3000/visitor/login", { "id": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
+        this.isAdmin = res.data.type;
+        this.userList = res.data.userList;
+        if (this.userList.length > 0) {
+          this.Seluser = this.userList[0].email;
+        }
+        this.init();
+      })
+    }
+
+
     this.getAll();
     if (window.localStorage.getItem("isLogin") == "true") {
       this.isLogin = true;
@@ -132,6 +140,7 @@ export class SearchComponent implements OnInit {
     })
   }
   search() {
+    this.keyword = this.filterHTMLTag(this.keyword);
     while (this.keyword.indexOf(" ") != -1) {
       this.keyword = this.keyword.replace(" ", "");
     }
@@ -151,6 +160,9 @@ export class SearchComponent implements OnInit {
   }
 
   addClass() {
+    this.addCdata.class_nbr=this.filterHTMLTag(this.addCdata.class_nbr);
+    this.addCdata.class_section=this.filterHTMLTag(this.addCdata.class_section);
+    this.addCdata.facility_ID=this.filterHTMLTag(this.addCdata.facility_ID);
     if (this.addCdata.class_nbr == "" ||
       this.addCdata.class_section == "" ||
       this.addCdata.facility_ID == "") {
@@ -193,6 +205,10 @@ export class SearchComponent implements OnInit {
 
   }
   addCatalog() {
+    this.addCLdata.catalog_nbr=this.filterHTMLTag(this.addCLdata.catalog_nbr);
+    this.addCLdata.className=this.filterHTMLTag(this.addCLdata.className);
+    this.addCLdata.catalog_description=this.filterHTMLTag(this.addCLdata.catalog_description);
+
     if (this.addCLdata.catalog_nbr == "" ||
       this.addCLdata.className == "" ||
       this.addCLdata.catalog_description == "") {
@@ -216,7 +232,25 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  sendReview(id) {
+    this.review = this.filterHTMLTag(this.review);
+    this.http.post("http://127.0.0.1:3000/user/sendView", { user: window.localStorage.getItem("token"), id: id, text: this.review }, this.httpOptions).subscribe((res: any) => {
+      this.review = "";
+      alert(res.text);
+      window.location.reload();
+    })
 
+  }
+
+  updateDisplay(id, val, key, i) {
+    if (val[i].display != key) {
+      val[i].display = key;
+      this.http.post("http://127.0.0.1:3000/user/changeViewDisplay", { id: id, data: val }, this.httpOptions).subscribe((res: any) => {
+        console.log(res.text);
+      })
+    }
+
+  }
   delCatalog(id) {
     if (confirm("Are you sure you want to delete this?")) {
       this.http.post("http://127.0.0.1:3000/user/delCatalog", { "id": id, "user": window.localStorage.getItem("userEmail") }, this.httpOptions).subscribe((res: any) => {
@@ -235,11 +269,15 @@ export class SearchComponent implements OnInit {
     return false;
   }
   isCreateUser(creatUser) {
-    if (creatUser == this.jwt.decodeToken(window.localStorage.getItem("token")).user_id && this.isLogin) {
-      return true;
-    } else {
-      return false;
+    if (this.isLogin) {
+      if (creatUser == this.jwt.decodeToken(window.localStorage.getItem("token")).user_id && this.isLogin) {
+        return true;
+      } else {
+        return false;
+      }
     }
+    return false;
+
   }
   nowClassID(id) {
     this.c_id = id;
@@ -275,20 +313,35 @@ export class SearchComponent implements OnInit {
     this.revise_key = 0;
   }
   isPrivate(val) {
-    if (this.jwt.decodeToken(window.localStorage.getItem("token")).user_id == val.createUser) {
+    if (this.isLogin) {
+      if (this.jwt.decodeToken(window.localStorage.getItem("token")).user_id == val.createUser) {
+        return true;
+      } else if (val.power == "0") {
+        return false;
+      }
       return true;
     } else if (val.power == "0") {
+
       return false;
+
     }
     return true;
 
+
   }
-  addAdmin(){
-if(confirm("Are you sure you want to do this?\nOperation cannot be recalled.")){
-    this.http.post("http://127.0.0.1:3000/admin/addAdmin", {email:this.Seluser}, this.httpOptions).subscribe((res: any) => {
-            alert(res.text);
-            window.location.reload();
-    })
+  addAdmin() {
+    if (confirm("Are you sure you want to do this?\nOperation cannot be recalled.")) {
+      this.http.post("http://127.0.0.1:3000/admin/addAdmin", { email: this.Seluser }, this.httpOptions).subscribe((res: any) => {
+        alert(res.text);
+        window.location.reload();
+      })
+    }
   }
-}
+  filterHTMLTag(msg) {
+    var msg = msg.replace(/<\/?[^>]*>/g, ''); //remove HTML 
+    msg = msg.replace(/^[\.\#]?\w+[^{]+\{[^}]*\}/g, '');//remove css
+    msg = msg.replace(/[|]*\n/, '') //remove " "
+    msg = msg.replace(/&npsp;/ig, ''); //remove npsp
+    return msg;
+  }
 }

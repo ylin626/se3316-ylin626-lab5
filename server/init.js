@@ -16279,6 +16279,7 @@ function initDB(client) {
         element.createUserName = "Admin";
         element.reviseTime = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
         element.power = "1";
+        element.review = [];
 
     });
     db.collection("schedule").insertMany(timeTable, function(err, result) {
