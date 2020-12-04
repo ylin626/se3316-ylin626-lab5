@@ -8,7 +8,16 @@ import { JwtHelperService } from "@auth0/angular-jwt";
   styleUrls: ['./head.component.scss']
 })
 export class HeadComponent implements OnInit {
- 
+ dmca ={
+  catalog_nbr:"",
+  userEmail:"",
+  reviewTime:null,
+  linkEmail:""
+ }
+  //http Header
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' })
+  };
 
   isLogin = false;
   userName="";
@@ -33,6 +42,30 @@ export class HeadComponent implements OnInit {
     window.localStorage.removeItem("token");
     this.isLogin=false;
     this.userName="Visitor";
+  }
+  closeModal(){
+    this.dmca ={
+      catalog_nbr:"",
+      userEmail:"",
+      reviewTime:null,
+      linkEmail:""
+    
+     }
+  }
+  sendDMCA(){
+    this.dmca.catalog_nbr= this.filterHTMLTag(this.dmca.catalog_nbr);
+    this.dmca.userEmail= this.filterHTMLTag(this.dmca.userEmail);
+    this.dmca.linkEmail= this.filterHTMLTag(this.dmca.linkEmail);
+    this.http.post("http://127.0.0.1:3000/visitor/sendDmca", this.dmca, this.httpOptions).subscribe((res: any) => {
+        alert(res.text);
+      })
+  }
+  filterHTMLTag(msg) {
+    var msg = msg.replace(/<\/?[^>]*>/g, ''); //remove HTML 
+    msg = msg.replace(/^[\.\#]?\w+[^{]+\{[^}]*\}/g, '');//remove css
+    msg = msg.replace(/[|]*\n/, '') //remove " "
+    msg = msg.replace(/&npsp;/ig, ''); //remove npsp
+    return msg;
   }
   
 }

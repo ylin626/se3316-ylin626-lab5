@@ -143,6 +143,31 @@ app.post("/admin/addAdmin", function(req, res) {
     })
 });
 
+
+
+/**
+ * send DMCA
+ * @param dmca
+ */
+app.post("/visitor/sendDmca", function(req, res) {
+    req.body.sendTime = dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("timeTable")
+        dbo.collection("dmca").insertOne(req.body, function(err, result) {
+            if (err) throw err;
+            db.close();
+            res.send({
+                status: 200,
+                text: "Send Successful！"
+            });
+
+        })
+    })
+});
+
 /**
  * get by Subject, Course Suffix, Component, Starting Time, Ending Time, Day of Class, Campus
  * @param subject

@@ -26,6 +26,9 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" routerLink="/login" (click)="logout()"><i data-feather="log-out" class="mr-1"></i> {{isLogin?"Logout":"Login"}}</a>
+                <a class="dropdown-item" routerLink="/about"><i data-feather="about" class="mr-1"></i> About </a>
+                <a class="dropdown-item" routerLink="/search"><i data-feather="about" class="mr-1"></i> Main </a>
+                <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#dmacModal"><i data-feather="about" class="mr-1"></i> DMCA Apinion</a>
             </div>
         </li>
         <!-- /User Menu -->
@@ -35,3 +38,42 @@
 
 </div>
 <!-- /Header -->
+<div class="modal fade " id="dmacModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">DMCA Opinion</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <label for="dmacclass_nbr" style="margin: 0 13px;"> Catalog Nbr:</label>
+                    <input style="margin: 0 10px;" name="catalog_nbr" id="dmacclass_nbr" type="text" [(ngModel)]="dmca.catalog_nbr">
+                </div>
+                <div class="row">
+                    <label for="inpinputuserEmail" style="margin: 0 11px;">User Email:</label>
+                    <input style="margin: 0 25px;" name="userEmail" id="inpinputuserEmail" type="email" [(ngModel)]="dmca.userEmail">
+                </div>
+                <div class="row">
+                    <label for="inputreviewTime" style="margin: 0 8px;">Review Time:</label>
+                    <input style="margin: 0 18px;" name="reviewTime" id="inputreviewTime" type="datetime-local" [(ngModel)]="dmca.reviewTime">
+                </div>
+                <div class="row">
+                    <label for="inpinputlinkEmail">Contact Email:</label>
+                    <input style="margin: 0 25px;" name="linkEmail" id="inpinputlinkEmail" type="email" [(ngModel)]="dmca.linkEmail">
+                </div>
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModal()">close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="sendDMCA()">Submit</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+
+</div>

@@ -16273,6 +16273,11 @@ function initDB(client) {
         console.log("Create user Collection!");
 
     });
+    db.createCollection('dmca', function(err, res) {
+        if (err) throw err;
+        console.log("Create dmca Collection!");
+
+    });
     timeTable.forEach(element => {
         element.catalog_nbr = element.catalog_nbr.toString();
         element.createUser = "Admin";
