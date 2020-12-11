@@ -56,7 +56,7 @@ export class HeadComponent implements OnInit {
     this.dmca.catalog_nbr= this.filterHTMLTag(this.dmca.catalog_nbr);
     this.dmca.userEmail= this.filterHTMLTag(this.dmca.userEmail);
     this.dmca.linkEmail= this.filterHTMLTag(this.dmca.linkEmail);
-    this.http.post("http://127.0.0.1:3000/visitor/sendDmca", this.dmca, this.httpOptions).subscribe((res: any) => {
+    this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/visitor/sendDmca", this.dmca, this.httpOptions).subscribe((res: any) => {
         alert(res.text);
       })
   }

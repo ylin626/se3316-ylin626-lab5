@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit {
 
   constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth, private jwt: JwtHelperService) {
     if (!(window.localStorage.getItem("token") == "" || window.localStorage.getItem("token") == null || window.localStorage.getItem("token") == undefined)) {
-      this.http.post("http://127.0.0.1:3000/visitor/login", { "id": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
+      this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/visitor/login", { "id": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
         this.isAdmin = res.data.type;
         this.userList = res.data.userList;
         if (this.userList.length > 0) {
@@ -112,7 +112,7 @@ export class SearchComponent implements OnInit {
   }
 
   getAll() {
-    this.http.get("http://127.0.0.1:3000/visitor/all").subscribe((res: any) => {
+    this.http.get("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/visitor/all").subscribe((res: any) => {
       this.list = res.data;
     })
   }
@@ -127,7 +127,7 @@ export class SearchComponent implements OnInit {
         dayS.push(this.days[i].value);
       }
     }
-    this.http.post("http://127.0.0.1:3000/visitor/findinfo", {
+    this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/visitor/findinfo", {
       "subject": this.subject,
       "designation": this.designation,
       "component": this.component,
@@ -147,14 +147,14 @@ export class SearchComponent implements OnInit {
     if (this.keyword.length < 4) {
       alert("The key must longer then 4 chars!")
     } else {
-      this.http.post("http://127.0.0.1:3000/visitor/findbykeyword", { "keyword": this.keyword }, this.httpOptions).subscribe((res: any) => {
+      this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/visitor/findbykeyword", { "keyword": this.keyword }, this.httpOptions).subscribe((res: any) => {
         this.list = res.data;
       })
     }
   }
 
   getMyCatalog() {
-    this.http.post("http://127.0.0.1:3000/user/myCatalog", { "user": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
+    this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/myCatalog", { "user": this.jwt.decodeToken(window.localStorage.getItem("token")).user_id }, this.httpOptions).subscribe((res: any) => {
       this.list = res.data;
     })
   }
@@ -179,12 +179,12 @@ export class SearchComponent implements OnInit {
         }
         this.addCdata.days = dayS;
         if (this.revise_key == -1) {
-          this.http.post("http://127.0.0.1:3000/user/addClass", { "id": this.c_id, "data": this.addCdata }, this.httpOptions).subscribe((res: any) => {
+          this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/addClass", { "id": this.c_id, "data": this.addCdata }, this.httpOptions).subscribe((res: any) => {
             alert(res.text);
             window.location.reload();
           })
         } else {
-          this.http.post("http://127.0.0.1:3000/user/reviseClass", { "id": this.c_id, "data": this.addCdata, "key": this.revise_key }, this.httpOptions).subscribe((res: any) => {
+          this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/reviseClass", { "id": this.c_id, "data": this.addCdata, "key": this.revise_key }, this.httpOptions).subscribe((res: any) => {
             alert(res.text);
             window.location.reload();
           })
@@ -197,7 +197,7 @@ export class SearchComponent implements OnInit {
   }
   delClass(id, key) {
     if (confirm("Are you sure you want to delete this?")) {
-      this.http.post("http://127.0.0.1:3000/user/delClass", { "id": id, "user": window.localStorage.getItem("userEmail"), "key": key }, this.httpOptions).subscribe((res: any) => {
+      this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/delClass", { "id": id, "user": window.localStorage.getItem("userEmail"), "key": key }, this.httpOptions).subscribe((res: any) => {
         alert(res.text);
         window.location.reload();
       })
@@ -218,12 +218,12 @@ export class SearchComponent implements OnInit {
         alert("The Class Nbr cannot less than 4 chars and more than 5 chars.")
       } else {
         if (this.revise_key == -1) {
-          this.http.post("http://127.0.0.1:3000/user/addCatalog", this.addCLdata, this.httpOptions).subscribe((res: any) => {
+          this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/addCatalog", this.addCLdata, this.httpOptions).subscribe((res: any) => {
             alert(res.text);
             window.location.reload();
           })
         } else {
-          this.http.post("http://127.0.0.1:3000/user/reviseCatalog", this.addCLdata, this.httpOptions).subscribe((res: any) => {
+          this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/reviseCatalog", this.addCLdata, this.httpOptions).subscribe((res: any) => {
             alert(res.text);
             window.location.reload();
           })
@@ -234,7 +234,7 @@ export class SearchComponent implements OnInit {
 
   sendReview(id) {
     this.review = this.filterHTMLTag(this.review);
-    this.http.post("http://127.0.0.1:3000/user/sendView", { user: window.localStorage.getItem("token"), id: id, text: this.review }, this.httpOptions).subscribe((res: any) => {
+    this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/sendView", { user: window.localStorage.getItem("token"), id: id, text: this.review }, this.httpOptions).subscribe((res: any) => {
       this.review = "";
       alert(res.text);
       window.location.reload();
@@ -245,7 +245,7 @@ export class SearchComponent implements OnInit {
   updateDisplay(id, val, key, i) {
     if (val[i].display != key) {
       val[i].display = key;
-      this.http.post("http://127.0.0.1:3000/user/changeViewDisplay", { id: id, data: val }, this.httpOptions).subscribe((res: any) => {
+      this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/changeViewDisplay", { id: id, data: val }, this.httpOptions).subscribe((res: any) => {
         console.log(res.text);
       })
     }
@@ -253,7 +253,7 @@ export class SearchComponent implements OnInit {
   }
   delCatalog(id) {
     if (confirm("Are you sure you want to delete this?")) {
-      this.http.post("http://127.0.0.1:3000/user/delCatalog", { "id": id, "user": window.localStorage.getItem("userEmail") }, this.httpOptions).subscribe((res: any) => {
+      this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/user/delCatalog", { "id": id, "user": window.localStorage.getItem("userEmail") }, this.httpOptions).subscribe((res: any) => {
         alert(res.text);
         window.location.reload();
       })
@@ -331,7 +331,7 @@ export class SearchComponent implements OnInit {
   }
   addAdmin() {
     if (confirm("Are you sure you want to do this?\nOperation cannot be recalled.")) {
-      this.http.post("http://127.0.0.1:3000/admin/addAdmin", { email: this.Seluser }, this.httpOptions).subscribe((res: any) => {
+      this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/admin/addAdmin", { email: this.Seluser }, this.httpOptions).subscribe((res: any) => {
         alert(res.text);
         window.location.reload();
       })

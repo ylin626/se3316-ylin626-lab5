@@ -23,7 +23,7 @@ export class RegisterComponent implements OnInit {
   actionCodeSettings = {
     // URL you want to redirect back to. The domain (www.example.com) for this
     // URL must be in the authorized domains list in the Firebase Console.
-    url: 'http://localhost:4200/login'
+    url: 'http://ec2-18-233-63-117.compute-1.amazonaws.com:4200/login'
   }
 
   user: Observable<firebase.User>;
@@ -51,7 +51,7 @@ export class RegisterComponent implements OnInit {
                 user.sendEmailVerification();
                 user.updateProfile({ displayName: this.name });
                 user.getIdToken().then(token => {
-                  this.http.post("http://127.0.0.1:3000/visitor/register", this.jwt.decodeToken(token), this.httpOptions).subscribe((res: any) => {
+                  this.http.post("http://ec2-18-233-63-117.compute-1.amazonaws.com:3000/visitor/register", this.jwt.decodeToken(token), this.httpOptions).subscribe((res: any) => {
                     console.log(res.data)
                   })
                   alert("Register Successful!\nPlease check your email to complete the verification~")
